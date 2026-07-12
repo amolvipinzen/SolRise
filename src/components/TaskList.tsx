@@ -537,6 +537,25 @@ export default function TaskList({
                               <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-[#F6C644] text-[#C19519]" />
                               <span>+{task.xpReward} XP</span>
                             </span>
+
+                            {task.isRecurring && (
+                              <>
+                                <span className="text-[#E1D8F5] text-[10px] sm:text-xs">|</span>
+                                <span className="flex items-center gap-1 text-[10px] sm:text-xs text-[#7A63D4] font-bold bg-[#F3EEFA] px-1.5 py-0.5 rounded-md select-none shrink-0" draggable={false}>
+                                  <span>🔄</span>
+                                  <span>
+                                    {task.recurrenceInterval === 1 ? 'Every' : `Every ${task.recurrenceInterval}`} {
+                                      task.frequency === 'Daily' ? (task.recurrenceInterval === 1 ? 'day' : 'days') :
+                                      task.frequency === 'Weekly' ? (task.recurrenceInterval === 1 ? 'week' : 'weeks') :
+                                      task.frequency === 'Monthly' ? (task.recurrenceInterval === 1 ? 'month' : 'months') :
+                                      (task.recurrenceInterval === 1 ? 'day' : 'days')
+                                    }
+                                    {task.recurrenceDurationType === 'occurrences' && ` (${task.recurrenceDurationValue}x)`}
+                                    {task.recurrenceDurationType === 'date' && ` (until ${task.recurrenceEndDate})`}
+                                  </span>
+                                </span>
+                              </>
+                            )}
                           </div>
 
                           {/* Bottom footer row containing assignee details & edit actions */}

@@ -20,6 +20,16 @@ export default function TaskFormModal({ familyMembers, onClose, onSave, taskToEd
   const [timeOfDay, setTimeOfDay] = useState(taskToEdit?.timeOfDay || '12:00');
   const [deadlineDate, setDeadlineDate] = useState(taskToEdit?.deadlineDate || '');
 
+  const [isRecurring, setIsRecurring] = useState(taskToEdit?.isRecurring || false);
+  const [recurrenceInterval, setRecurrenceInterval] = useState(taskToEdit?.recurrenceInterval || 1);
+  const [recurrenceDurationType, setRecurrenceDurationType] = useState<'indefinite' | 'occurrences' | 'date'>(
+    taskToEdit?.recurrenceDurationType || 'indefinite'
+  );
+  const [recurrenceDurationValue, setRecurrenceDurationValue] = useState(
+    taskToEdit?.recurrenceDurationValue || 5
+  );
+  const [recurrenceEndDate, setRecurrenceEndDate] = useState(taskToEdit?.recurrenceEndDate || '');
+
   // Auto calculate reward XP based on difficulty & frequency
   const calculateXPReward = (diff: TaskDifficulty, freq: TaskFrequency) => {
     let base = 10;
@@ -47,7 +57,12 @@ export default function TaskFormModal({ familyMembers, onClose, onSave, taskToEd
       timeOfDay,
       deadlineDate: frequency !== 'Daily' ? deadlineDate : undefined,
       xpReward,
-      difficulty
+      difficulty,
+      isRecurring,
+      recurrenceInterval: isRecurring ? recurrenceInterval : undefined,
+      recurrenceDurationType: isRecurring ? recurrenceDurationType : undefined,
+      recurrenceDurationValue: (isRecurring && recurrenceDurationType === 'occurrences') ? recurrenceDurationValue : undefined,
+      recurrenceEndDate: (isRecurring && recurrenceDurationType === 'date') ? recurrenceEndDate : undefined
     });
 
     soundEffects.playChime();
@@ -199,6 +214,95 @@ export default function TaskFormModal({ familyMembers, onClose, onSave, taskToEd
               />
             </div>
 
+          </div>
+
+          {/* Recurring Task Settings Card */}
+          <div className="bg-purple-50/35 p-3.5 rounded-xl border border-purple-100/80 space-y-3">
+            <label className="flex items-center gap-2 text-xs font-bold text-purple-700 uppercase tracking-wider cursor-pointer select-none">
+              <input
+                type="checkbox"
+                className="w-4 h-4 text-purple-600 border-purple-300 rounded focus:ring-purple-500 cursor-pointer"
+                checked={isRecurring}
+                onChange={(e) => setIsRecurring(e.target.checked)}
+              />
+              <span className="flex items-center gap-1.5">
+                <span>🔄 Make this a recurring task</span>
+              </span>
+            </label>
+
+            {isRecurring && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-purple-100/60 animate-in fade-in duration-200">
+                {/* Repeat Interval */}
+                <div>
+                  <label className="block text-[10px] font-bold text-purple-600 uppercase tracking-wider mb-1">
+                    Repeat Every
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="1"
+                      className="w-20 px-3 py-1.5 bg-white border-2 border-purple-100 rounded-xl text-xs font-semibold text-purple-900 focus:border-purple-300 focus:outline-none"
+                      value={recurrenceInterval}
+                      onChange={(e) => setRecurrenceInterval(parseInt(e.target.value) || 1)}
+                    />
+                    <span className="text-xs text-purple-700 font-bold">
+                      {frequency === 'Daily' && (recurrenceInterval === 1 ? 'day' : 'days')}
+                      {frequency === 'Weekly' && (recurrenceInterval === 1 ? 'week' : 'weeks')}
+                      {frequency === 'Monthly' && (recurrenceInterval === 1 ? 'month' : 'months')}
+                      {frequency === 'One-time' && (recurrenceInterval === 1 ? 'day' : 'days')}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Duration/End Condition */}
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-[10px] font-bold text-purple-600 uppercase tracking-wider mb-1">
+                      Recurring Duration
+                    </label>
+                    <select
+                      className="w-full px-3 py-1.5 bg-white border-2 border-purple-100 rounded-xl text-xs font-bold text-purple-900 focus:border-purple-300 focus:outline-none cursor-pointer"
+                      value={recurrenceDurationType}
+                      onChange={(e) => setRecurrenceDurationType(e.target.value as any)}
+                    >
+                      <option value="indefinite">Indefinitely</option>
+                      <option value="occurrences">Specific occurrences</option>
+                      <option value="date">Specific end date</option>
+                    </select>
+                  </div>
+
+                  {recurrenceDurationType === 'occurrences' && (
+                    <div className="animate-in fade-in duration-200">
+                      <label className="block text-[10px] font-bold text-purple-600 uppercase tracking-wider mb-1">
+                        Number of times
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        className="w-full px-3 py-1.5 bg-white border-2 border-purple-100 rounded-xl text-xs font-semibold text-purple-900 focus:border-purple-300 focus:outline-none"
+                        value={recurrenceDurationValue}
+                        onChange={(e) => setRecurrenceDurationValue(parseInt(e.target.value) || 1)}
+                      />
+                    </div>
+                  )}
+
+                  {recurrenceDurationType === 'date' && (
+                    <div className="animate-in fade-in duration-200">
+                      <label className="block text-[10px] font-bold text-purple-600 uppercase tracking-wider mb-1">
+                        End date
+                      </label>
+                      <input
+                        type="date"
+                        required
+                        className="w-full px-3 py-1.5 bg-white border-2 border-purple-100 rounded-xl text-xs font-semibold text-purple-900 focus:border-purple-300 focus:outline-none"
+                        value={recurrenceEndDate}
+                        onChange={(e) => setRecurrenceEndDate(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Assign To: Avatars Grid */}

@@ -40,6 +40,12 @@ export interface Task {
   streak: number;
   createdById: string;
   createdAt: string;
+  order?: number;
+  isRecurring?: boolean;
+  recurrenceInterval?: number;
+  recurrenceDurationType?: 'indefinite' | 'occurrences' | 'date';
+  recurrenceDurationValue?: number;
+  recurrenceEndDate?: string;
 }
 
 export interface TaskLog {
