@@ -482,7 +482,7 @@ export default function TaskList({
                         }`}
                       >
                         {/* Left column: Checkbox */}
-                        <div className="flex flex-col items-center shrink-0 pt-0.5" draggable={false}>
+                        <div className={`flex flex-col items-center shrink-0 pt-0.5 ${draggedTaskId ? 'pointer-events-none' : ''}`} draggable={false}>
                           {isCompleted ? (
                             <button
                               onClick={() => onToggleComplete(task)}
@@ -499,7 +499,7 @@ export default function TaskList({
                         </div>
 
                         {/* Right column: All text details and actions */}
-                        <div className="flex-1 min-w-0 flex flex-col gap-1 sm:gap-1.5">
+                        <div className={`flex-1 min-w-0 flex flex-col gap-1 sm:gap-1.5 ${draggedTaskId ? 'pointer-events-none' : ''}`}>
                           {/* Title block with category icon */}
                           <div className="flex items-start gap-1.5 sm:gap-2">
                             <span className="text-sm sm:text-lg select-none shrink-0 mt-0.5">

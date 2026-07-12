@@ -470,10 +470,12 @@ export default function App() {
       const batch = writeBatch(db);
       let hasUpdates = false;
 
-      reorderedTasks.forEach((task, index) => {
-        if (task.order !== index) {
+      reorderedTasks.forEach((task) => {
+        const currentTask = tasks.find(t => t.id === task.id);
+        const oldOrder = currentTask?.order;
+        if (oldOrder !== task.order) {
           const taskDocRef = doc(db, 'circles', userProfile.circleId!, 'tasks', task.id);
-          batch.update(taskDocRef, { order: index });
+          batch.update(taskDocRef, { order: task.order });
           hasUpdates = true;
         }
       });
