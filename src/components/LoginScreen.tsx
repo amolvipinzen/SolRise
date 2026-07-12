@@ -6,8 +6,9 @@ import {
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { UserProfile } from '../types';
-import { Sparkles, HelpCircle } from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
 import { soundEffects } from '../utils/audio';
+import logoImg from '../logo.jpg';
 
 interface LoginScreenProps {
   onLoginSuccess: (userProfile: UserProfile) => void;
@@ -112,25 +113,18 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 py-8">
-      <div className="w-full max-w-md paper-card p-8 bg-white border border-purple-200 custom-shadow rounded-2xl relative overflow-hidden">
+      <div className="w-full max-w-md p-8 bg-[#F5F0FF] rounded-2xl relative overflow-hidden">
         
         {/* Subtle decorative top sun glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-amber-200/20 blur-3xl rounded-full"></div>
 
-        {/* Handwriting Styled Logo */}
+        {/* Graphical Logo replacing text */}
         <div className="text-center mb-8 relative z-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-50 rounded-full border border-amber-200 text-amber-500 mb-4 shadow-sm">
-            <Sparkles className="w-8 h-8" />
-          </div>
-          <h1 className="font-caveat text-5xl font-bold text-purple-950 tracking-tight">
-            SolRise
-          </h1>
-          <p className="font-sans text-base text-purple-700 font-semibold mt-1">
-            A new beginning
-          </p>
-          <p className="font-sans text-xs text-purple-500/80 mt-3 italic px-6 leading-relaxed border-t border-purple-100/60 pt-3">
-            Rise to a better day with everything your home needs.
-          </p>
+          <img 
+            src={logoImg} 
+            alt="SolRise Logo" 
+            className="w-[280px] h-auto mx-auto object-contain rounded-2xl shadow-xs" 
+          />
         </div>
 
         {isIframe && (

@@ -477,7 +477,7 @@ export default function App() {
   // Not Logged In Screen
   if (!currentUser || !userProfile) {
     return (
-      <div className="min-h-screen bg-purple-50/50 py-10">
+      <div className="min-h-screen bg-[#F5F0FF] py-10 flex items-center justify-center">
         <LoginScreen onLoginSuccess={(profile) => setUserProfile(profile)} />
       </div>
     );
