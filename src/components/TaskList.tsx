@@ -29,41 +29,463 @@ export const LavenderSprig = ({ className = "w-12 h-12" }: { className?: string 
 );
 // soundEffects utility is imported and used below
 
-// Potted lavender floral graphic matching the completed task icon
-const LavenderPot = ({ className = "w-16 h-16" }: { className?: string }) => (
-  <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    {/* Plant pot */}
-    <path d="M25 65 L28 88 C28 91 30 93 33 93 L47 93 C50 93 52 91 52 88 L55 65 Z" fill="#B39DFA" opacity="0.9" />
-    {/* Pot rim */}
-    <rect x="22" y="59" width="36" height="6" rx="2" fill="#8A6CE2" />
-    {/* Cute white heart on the pot */}
-    <path d="M40 79 C40 79 37 76 35 78 C33 80 35 83 40 86 C45 83 47 80 45 78 C43 76 40 79 40 79 Z" fill="#FFFFFF" opacity="0.75" />
-    {/* Lavender stems */}
-    <path d="M40 60 C38 43 35 28 36 13" stroke="#718F5B" strokeWidth="2.2" />
-    <path d="M36 60 C32 46 24 33 22 20" stroke="#718F5B" strokeWidth="1.8" />
-    <path d="M44 60 C48 46 56 33 58 20" stroke="#718F5B" strokeWidth="1.8" />
-    {/* Foliage leaves */}
-    <path d="M35 55 C27 52 24 47 33 49" stroke="#718F5B" strokeWidth="1.5" fill="#718F5B" />
-    <path d="M45 55 C53 52 56 47 47 49" stroke="#718F5B" strokeWidth="1.5" fill="#718F5B" />
-    {/* Central buds */}
-    <circle cx="34" cy="28" r="3.5" fill="#9D82F2" />
-    <circle cx="38" cy="25" r="3.5" fill="#886AE6" />
-    <circle cx="36" cy="20" r="3.5" fill="#BFAEF8" />
-    <circle cx="34" cy="14" r="2.5" fill="#886AE6" />
-    <circle cx="38" cy="12" r="2.5" fill="#9D82F2" />
-    <circle cx="36" cy="8" r="2" fill="#D3C7FC" />
-    {/* Left buds */}
-    <circle cx="21" cy="32" r="3" fill="#886AE6" />
-    <circle cx="25" cy="29" r="3" fill="#9D82F2" />
-    <circle cx="22" cy="24" r="3" fill="#BFAEF8" />
-    <circle cx="20" cy="18" r="2.5" fill="#886AE6" />
-    {/* Right buds */}
-    <circle cx="59" cy="32" r="3" fill="#886AE6" />
-    <circle cx="55" cy="29" r="3" fill="#9D82F2" />
-    <circle cx="57" cy="24" r="3" fill="#BFAEF8" />
-    <circle cx="59" cy="18" r="2.5" fill="#886AE6" />
-  </svg>
-);
+// Potted/blooming lavender graphic matching the completed task progress
+interface LavenderBloomProps {
+  progress: number;
+  className?: string;
+}
+
+const LavenderBloom = ({ progress, className = "w-16 h-16" }: LavenderBloomProps) => {
+  // Determine blooming stage based on progress percentage
+  if (progress < 25) {
+    // Stage 1 (0% - 24%): Sprout (as per user image)
+    return (
+      <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+        {/* Grey soil base ellipse */}
+        <ellipse cx="40" cy="90" rx="16" ry="3.5" fill="#7E7D82" stroke="#4B4B4E" strokeWidth="1.5" />
+        
+        {/* Main green stem */}
+        <path d="M40 90 C39 70 39 52 40 38" stroke="#7E9B80" strokeWidth="3" strokeLinecap="round" />
+        
+        {/* Two green leaves growing from Y=70 */}
+        <path d="M40 70 C24 64 26 50 22 44 C27 48 35 62 40 70 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1.5" />
+        <path d="M40 70 C56 64 54 50 58 44 C53 48 45 62 40 70 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1.5" />
+        
+        {/* Left and Right Sepals */}
+        <path d="M40 38 C35 36 36 32 38 32 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1.2" />
+        <path d="M40 38 C45 36 44 32 42 32 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1.2" />
+
+        {/* Stacked buds (Bottom to Top) */}
+        {/* Bottom Center */}
+        <path d="M40 36 C36.5 36 36.5 30 40 27 C43.5 30 43.5 36 40 36 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1.2" />
+        {/* Left-1 */}
+        <path d="M37 32 C33.5 32 33.5 27 37 24 C40.5 27 40.5 32 37 32 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1.2" />
+        {/* Right-1 */}
+        <path d="M43 32 C46.5 32 46.5 27 43 24 C39.5 27 39.5 32 43 32 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1.2" />
+        {/* Center-2 */}
+        <path d="M40 28 C36.5 28 36.5 22 40 19 C43.5 22 43.5 28 40 28 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1.2" />
+        {/* Left-2 */}
+        <path d="M37 24 C33.5 24 33.5 19 37 16 C40.5 19 40.5 24 37 24 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1.2" />
+        {/* Right-2 */}
+        <path d="M43 24 C46.5 24 46.5 19 43 16 C39.5 19 39.5 24 43 24 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1.2" />
+        {/* Center-top */}
+        <path d="M40 19 C36.5 19 36.5 14 40 10 C43.5 14 43.5 19 40 19 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1.2" />
+      </svg>
+    );
+  } else if (progress < 50) {
+    // Stage 2 (25% - 49%): 3-stem Plant (as per user image)
+    return (
+      <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+        {/* Dark soil base ellipse */}
+        <ellipse cx="40" cy="90" rx="14" ry="2.5" fill="#1F1B2C" />
+        
+        {/* Main green stems */}
+        <path d="M40 90 Q39 65 40 42" stroke="#7E9B80" strokeWidth="3.2" strokeLinecap="round" />
+        <path d="M40 90 Q35 70 28 55" stroke="#7E9B80" strokeWidth="2.5" strokeLinecap="round" />
+        <path d="M40 90 Q46 68 53 50" stroke="#7E9B80" strokeWidth="2.5" strokeLinecap="round" />
+        
+        {/* Rising leaves from base */}
+        <path d="M40 85 C24 80 18 68 20 62 C24 62 34 76 40 85 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1.2" />
+        <path d="M40 85 C56 80 62 68 60 62 C56 62 46 76 40 85 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1.2" />
+        <path d="M40 85 C32 72 32 54 35 48 C37 48 38 68 40 85 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1.2" />
+        <path d="M40 85 C48 72 48 54 45 48 C43 48 42 68 40 85 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1.2" />
+        <path d="M40 85 C34 76 34 60 36 52 C38 52 38 72 40 85 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1.2" />
+        <path d="M40 85 C46 76 46 60 44 52 C42 52 42 72 40 85 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1.2" />
+        <path d="M40 85 C38 70 38 56 39 48 C40 48 40 68 40 85 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1.2" />
+        <path d="M40 85 C42 70 42 56 41 48 C40 48 40 68 40 85 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1.2" />
+
+        {/* --- LEFT STEM FLOWER SPIKE --- */}
+        <path d="M28 55 L21 30" stroke="#7E9B80" strokeWidth="2" />
+        {/* Left side node */}
+        <path d="M28 48 C24 48 24 45 28 44 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M28 48 C32 48 32 45 28 44 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        {/* Left stalk buds */}
+        <path d="M28 53 C24.5 53 24.5 48 28 45 C31.5 48 31.5 53 28 53 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M25 49 C21.5 49 21.5 44 25 41 C28.5 44 28.5 49 25 49 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M31 49 C27.5 49 27.5 44 31 41 C34.5 44 34.5 49 31 49 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M27 45 C23.5 45 23.5 40 27 37 C30.5 40 30.5 45 27 45 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M23 41 C19.5 41 19.5 36 23 33 C26.5 36 26.5 41 23 41 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M29 41 C25.5 41 25.5 36 29 33 C32.5 36 32.5 41 29 41 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M25 37 C21.5 37 21.5 32 25 29 C28.5 32 28.5 37 25 37 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M23 31 C19.5 31 19.5 27 23 24 C26.5 27 26.5 31 23 31 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+
+        {/* --- RIGHT STEM FLOWER SPIKE --- */}
+        <path d="M53 50 L60 25" stroke="#7E9B80" strokeWidth="2" />
+        {/* Right side node */}
+        <path d="M57 42 C53 42 53 39 57 38 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M57 42 C61 42 61 39 57 38 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        {/* Right stalk buds */}
+        <path d="M54 48 C50.5 48 50.5 43 54 40 C57.5 43 57.5 48 54 48 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M51 44 C47.5 44 47.5 39 51 36 C54.5 39 54.5 44 51 44 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M57 44 C53.5 44 53.5 39 57 36 C60.5 39 60.5 44 57 44 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M55 40 C51.5 40 51.5 35 55 32 C58.5 35 58.5 40 55 40 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M52 36 C48.5 36 48.5 31 52 28 C55.5 31 55.5 36 52 36 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M58 36 C54.5 36 54.5 31 58 28 C61.5 31 61.5 36 58 36 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M56 32 C52.5 32 52.5 27 56 24 C59.5 27 59.5 32 56 32 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M58 26 C54.5 26 54.5 22 58 19 C61.5 22 61.5 26 58 26 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+
+        {/* --- CENTRAL STEM FLOWER SPIKE --- */}
+        <path d="M40 42 L40 10" stroke="#7E9B80" strokeWidth="2.2" />
+        {/* Sepals */}
+        <path d="M40 42 C36 40 37 36 39 36 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1.2" />
+        <path d="M40 42 C44 40 43 36 41 36 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1.2" />
+        {/* Stacked buds */}
+        <path d="M40 40 C36.5 40 36.5 34 40 31 C43.5 34 43.5 40 40 40 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1.2" />
+        <path d="M37 36 C33.5 36 33.5 30 37 27 C40.5 30 40.5 36 37 36 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1.2" />
+        <path d="M43 36 C46.5 36 46.5 30 43 27 C39.5 30 39.5 36 43 36 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1.2" />
+        <path d="M40 32 C36.5 32 36.5 26 40 23 C43.5 26 43.5 32 40 32 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1.2" />
+        <path d="M37 28 C33.5 28 33.5 22 37 19 C40.5 22 40.5 28 37 28 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1.2" />
+        <path d="M43 28 C46.5 28 46.5 22 43 19 C39.5 22 39.5 28 43 28 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1.2" />
+        <path d="M40 24 C36.5 24 36.5 18 40 15 C43.5 18 43.5 24 40 24 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1.2" />
+        <path d="M37 20 C33.5 20 33.5 14 37 11 C40.5 14 40.5 20 37 20 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1.2" />
+        <path d="M43 20 C46.5 20 46.5 14 43 11 C39.5 14 39.5 20 43 20 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1.2" />
+        <path d="M40 16 C36.5 16 36.5 11 40 8 C43.5 11 43.5 16 40 16 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1.2" />
+        <path d="M40 9 C37.5 9 37.5 5 40 2 C42.5 5 42.5 9 40 9 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1.2" />
+      </svg>
+    );
+  } else if (progress < 75) {
+    // Stage 3 (50% - 74%): Medium Bushy Plant (as per user image)
+    return (
+      <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+        {/* Main green stems */}
+        <path d="M40 90 L40 38" stroke="#7E9B80" strokeWidth="3" />
+        <path d="M40 90 Q34 65 27 45" stroke="#7E9B80" strokeWidth="2.2" />
+        <path d="M40 90 Q46 65 53 45" stroke="#7E9B80" strokeWidth="2.2" />
+        
+        {/* Bushy foliage - dome of overlapping leaves at the base */}
+        {/* Layer 1 (Darker Green Base Leaves) */}
+        <path d="M40 90 C30 92 20 85 15 80 C18 76 28 80 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C50 92 60 85 65 80 C62 76 52 80 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C25 85 12 75 14 65 C18 64 28 75 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C55 85 68 75 66 65 C62 64 52 75 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C28 78 18 64 22 55 C26 56 34 72 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C52 78 62 64 58 55 C54 56 46 72 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C34 75 32 55 35 48 C37 50 38 72 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C46 75 48 55 45 48 C43 50 42 72 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        
+        {/* Layer 2 (Lighter Green Overlay Leaves) */}
+        <path d="M40 90 C30 85 24 72 30 65 C34 66 36 78 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C50 85 56 72 50 65 C46 66 44 78 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C37 80 34 68 38 60 C40 61 40 76 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C43 80 46 68 42 60 C40 61 40 76 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C32 88 26 80 32 75 C35 76 37 82 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C48 88 54 80 48 75 C45 76 43 82 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        
+        {/* --- LEFT STEM FLOWER SPIKE (Y=45 to Y=18, slanting left) --- */}
+        <path d="M27 45 L20 18" stroke="#7E9B80" strokeWidth="2.0" />
+        {/* Sepals and spaced buds */}
+        <path d="M27 45 C23 45 23 41 26 39 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M27 45 C29 43 30 40 27 38 L25 41 Z" fill="#7E9B80" />
+        
+        <path d="M25 41 C21.5 41 21.5 37 24 34 C26.5 36 26.5 40 25 41 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M28 39 C25 39 25 35 27 32 C29.5 34 29.5 38 28 39 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        
+        <path d="M23 35 C19.5 35 19.5 31 22 28 C24.5 30 24.5 34 23 35 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M26 33 C23 33 23 29 25 26 C27.5 28 27.5 32 26 33 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        
+        <path d="M21 29 C18 29 18 25 20 22 C22 24 22 28 21 29 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+        <path d="M24 27 C21 27 21 23 23 20 C25 22 25 26 24 27 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+        {/* Top left sepal and bud */}
+        <path d="M20 20 C18 20 18 16 20 13 C22 15 22 19 20 20 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+        <path d="M20 15 C19 12 19 10 20 9 C20.5 10 21 12 20 15 Z" fill="#7E9B80" />
+
+        {/* --- RIGHT STEM FLOWER SPIKE (Y=45 to Y=18, slanting right) --- */}
+        <path d="M53 45 L60 18" stroke="#7E9B80" strokeWidth="2.0" />
+        {/* Sepals and spaced buds */}
+        <path d="M53 45 C57 45 57 41 54 39 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M53 45 C51 43 50 40 53 38 L55 41 Z" fill="#7E9B80" />
+        
+        <path d="M55 41 C58.5 41 58.5 37 56 34 C53.5 36 53.5 40 55 41 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M52 39 C55 39 55 35 53 32 C50.5 34 50.5 38 52 39 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        
+        <path d="M57 35 C60.5 35 60.5 31 58 28 C55.5 30 55.5 34 57 35 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M54 33 C57 33 57 29 55 26 C52.5 28 52.5 32 54 33 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        
+        <path d="M59 29 C62 29 62 25 60 22 C58 24 58 28 59 29 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+        <path d="M56 27 C59 27 59 23 57 20 C55 22 55 26 56 27 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+        {/* Top right sepal and bud */}
+        <path d="M60 20 C62 20 62 16 60 13 C58 15 58 19 60 20 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+        <path d="M60 15 C61 12 61 10 60 9 C59.5 10 59 12 60 15 Z" fill="#7E9B80" />
+
+        {/* --- CENTRAL STEM FLOWER SPIKE (Y=38 to Y=8) --- */}
+        {/* Sepal and Bud Level 1 */}
+        <path d="M37 36 C34 36 33 32 37 29 C40 31 39 36 37 36 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M43 36 C46 36 47 32 43 29 C40 31 41 36 43 36 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M40 38 L40 33" stroke="#7E9B80" strokeWidth="1.5" />
+        
+        {/* Sepal and Bud Level 2 */}
+        <path d="M37 30 C34 30 33 26 37 23 C40 25 39 30 37 30 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M43 30 C46 30 47 26 43 23 C40 25 41 30 43 30 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M40 31 L40 27" stroke="#7E9B80" strokeWidth="1.5" />
+        
+        {/* Sepal and Bud Level 3 */}
+        <path d="M37 24 C34 24 33 20 37 17 C40 19 39 24 37 24 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M43 24 C46 24 47 20 43 17 C40 19 41 24 43 24 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M40 25 L40 21" stroke="#7E9B80" strokeWidth="1.5" />
+        
+        {/* Sepal and Bud Level 4 */}
+        <path d="M37 18 C34 18 33 14 37 11 C40 13 39 18 37 18 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M43 18 C46 18 47 14 43 11 C40 13 41 18 43 18 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M40 19 L40 15" stroke="#7E9B80" strokeWidth="1.5" />
+        
+        {/* Sepal and Bud Level 5 (Top Cluster) */}
+        <path d="M40 12 C37.5 12 37.5 8 40 4 C42.5 8 42.5 12 40 12 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+        <path d="M39 12 C37 8 38 4 39 3 C40 5 40 8 39 12 Z" fill="#7E9B80" />
+        <path d="M41 12 C43 8 42 4 41 3 C40 5 40 8 41 12 Z" fill="#7E9B80" />
+      </svg>
+    );
+  } else if (progress < 100) {
+    // Stage 4 (75% - 99%): Large Bushy Plant (as per user image)
+    return (
+      <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+        {/* Main green stems */}
+        <path d="M40 90 L40 42" stroke="#7E9B80" strokeWidth="3" />
+        <path d="M40 90 Q34 68 31 46" stroke="#7E9B80" strokeWidth="2.5" />
+        <path d="M40 90 Q46 68 49 46" stroke="#7E9B80" strokeWidth="2.5" />
+        <path d="M40 90 Q30 72 23 54" stroke="#7E9B80" strokeWidth="2" />
+        <path d="M40 90 Q50 72 57 54" stroke="#7E9B80" strokeWidth="2" />
+        
+        {/* Bushy foliage - dome of overlapping leaves at the base */}
+        {/* Layer 1 (Darker Green Base Leaves) */}
+        <path d="M40 90 C30 92 18 85 12 78 C15 74 26 78 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C50 92 62 85 68 78 C65 74 54 78 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C22 84 10 72 12 60 C17 59 27 72 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C58 84 70 72 68 60 C63 59 53 72 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C26 74 16 58 20 48 C24 50 32 68 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C54 74 64 58 60 48 C56 50 48 68 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C33 72 30 52 33 44 C35 46 37 66 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C47 72 50 52 47 44 C45 46 43 66 40 90 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="1" />
+        
+        {/* Layer 2 (Lighter Green Overlay Leaves) */}
+        <path d="M40 90 C28 85 22 70 28 62 C32 63 34 75 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C52 85 58 70 52 62 C48 63 46 75 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C35 78 32 64 36 56 C38 57 38 72 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C45 78 48 64 44 56 C42 57 42 72 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C31 89 25 80 30 72 C33 73 35 80 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C49 89 55 80 50 72 C47 73 45 80 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C38 70 36 54 38 46 C39 46 40 64 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+        <path d="M40 90 C42 70 44 54 42 46 C41 46 40 64 40 90 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="1" />
+
+        {/* --- OUTER LEFT STEM FLOWER SPIKE (Y=54 to Y=25, tilted left) --- */}
+        <path d="M23 54 L15 28" stroke="#7E9B80" strokeWidth="1.8" />
+        <path d="M23 53 C19.5 53 19.5 48 23 45 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M20 49 C16.5 49 16.5 44 20 41 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M26 49 C22.5 49 22.5 44 26 41 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M22 45 C18.5 45 18.5 40 22 37 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M18 41 C14.5 41 14.5 36 18 33 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M24 41 C20.5 41 20.5 36 24 33 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M20 37 C16.5 37 16.5 32 20 29 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M18 31 C14.5 31 14.5 27 18 24 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+
+        {/* --- INNER LEFT STEM FLOWER SPIKE (Y=46 to Y=18, slanting left) --- */}
+        <path d="M31 46 L24 20" stroke="#7E9B80" strokeWidth="2.0" />
+        <path d="M31 45 C27.5 45 27.5 40 31 37 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M28 41 C24.5 41 24.5 36 28 33 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M34 41 C30.5 41 30.5 36 34 33 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M30 37 C26.5 37 26.5 32 30 29 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M26 33 C22.5 33 22.5 29 26 26 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M32 33 C28.5 33 28.5 29 32 26 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M28 29 C24.5 29 24.5 25 28 22 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+        <path d="M26 23 C22.5 23 22.5 19 26 16 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+
+        {/* --- OUTER RIGHT STEM FLOWER SPIKE (Y=54 to Y=25, tilted right) --- */}
+        <path d="M57 54 L65 28" stroke="#7E9B80" strokeWidth="1.8" />
+        <path d="M57 53 C53.5 53 53.5 48 57 45 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M54 49 C50.5 49 50.5 44 54 41 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M60 49 C56.5 49 56.5 44 60 41 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M58 45 C54.5 45 54.5 40 58 37 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M56 41 C52.5 41 52.5 36 56 33 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M62 41 C58.5 41 58.5 36 62 33 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M60 37 C56.5 37 56.5 32 60 29 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M62 31 C58.5 31 58.5 27 62 24 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+
+        {/* --- INNER RIGHT STEM FLOWER SPIKE (Y=46 to Y=18, slanting right) --- */}
+        <path d="M49 46 L56 20" stroke="#7E9B80" strokeWidth="2.0" />
+        <path d="M49 45 C45.5 45 45.5 40 49 37 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M46 41 C42.5 41 42.5 36 46 33 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M52 41 C48.5 41 48.5 36 52 33 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M50 37 C46.5 37 46.5 32 50 29 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M46 33 C42.5 33 42.5 29 46 26 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M52 33 C48.5 33 48.5 29 52 26 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M52 29 C48.5 29 48.5 25 52 22 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+        <path d="M54 23 C50.5 23 50.5 19 54 16 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+
+        {/* --- CENTRAL STEM FLOWER SPIKE (Y=38 to Y=8) --- */}
+        <path d="M40 42 L40 10" stroke="#7E9B80" strokeWidth="2.2" />
+        {/* Red detail at base of central stalk (resembling butterfly/special sepals) */}
+        <path d="M37 41 Q36 38 40 40 Q44 38 43 41 Q40 43 37 41 Z" fill="#B03A2E" stroke="#5C1D16" strokeWidth="0.8" />
+        
+        {/* Sepal and Bud Level 1 */}
+        <path d="M37 36 C34 36 33 32 37 29 C40 31 39 36 37 36 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M43 36 C46 36 47 32 43 29 C40 31 41 36 43 36 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M40 38 L40 33" stroke="#7E9B80" strokeWidth="1.5" />
+        
+        {/* Sepal and Bud Level 2 */}
+        <path d="M37 30 C34 30 33 26 37 23 C40 25 39 30 37 30 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M43 30 C46 30 47 26 43 23 C40 25 41 30 43 30 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M40 31 L40 27" stroke="#7E9B80" strokeWidth="1.5" />
+        
+        {/* Sepal and Bud Level 3 */}
+        <path d="M37 24 C34 24 33 20 37 17 C40 19 39 24 37 24 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M43 24 C46 24 47 20 43 17 C40 19 41 24 43 24 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M40 25 L40 21" stroke="#7E9B80" strokeWidth="1.5" />
+        
+        {/* Sepal and Bud Level 4 */}
+        <path d="M37 18 C34 18 33 14 37 11 C40 13 39 18 37 18 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M43 18 C46 18 47 14 43 11 C40 13 41 18 43 18 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M40 19 L40 15" stroke="#7E9B80" strokeWidth="1.5" />
+        
+        {/* Sepal and Bud Level 5 (Top Cluster) */}
+        <path d="M40 12 C37.5 12 37.5 8 40 4 C42.5 8 42.5 12 40 12 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+        <path d="M39 12 C37 8 38 4 39 3 C40 5 40 8 39 12 Z" fill="#7E9B80" />
+        <path d="M41 12 C43 8 42 4 41 3 C40 5 40 8 41 12 Z" fill="#7E9B80" />
+      </svg>
+    );
+  } else {
+    // Stage 5 (100%): Fully Potted Blooming Lavender with Ribbon & Butterflies (as per user image)
+    return (
+      <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+        {/* --- POT & SOIL --- */}
+        {/* Pot Body */}
+        <path d="M24 64 L27 88 C28 91 30 93 34 93 L46 93 C50 93 52 91 53 88 L56 64 Z" fill="#E2D9F8" stroke="#9D82F2" strokeWidth="1.5" />
+        {/* Soil Base */}
+        <ellipse cx="40" cy="62" rx="16.5" ry="2.5" fill="#3B2E2A" />
+        {/* Pot Rim */}
+        <path d="M22 59 L58 59 C59.5 59 60 61 58 64 L22 64 C20 61 20.5 59 22 59 Z" fill="#D2C5FA" stroke="#9D82F2" strokeWidth="1.2" />
+
+        {/* Ribbon & Ribbon Bow on Pot */}
+        <rect x="25" y="70" width="30" height="4" fill="#9D82F2" opacity="0.9" />
+        <path d="M25 72 L55 72" stroke="#E2D9F8" strokeWidth="0.8" strokeDasharray="2,2" />
+        {/* Bow Knot */}
+        <rect x="38.5" y="69.5" width="3" height="5" rx="1" fill="#7A63D4" stroke="#4E3B9B" strokeWidth="0.5" />
+        {/* Bow Loops */}
+        <path d="M38.5 72 C34 68 34 76 38.5 72 Z" fill="#9D82F2" stroke="#684FB7" strokeWidth="0.8" />
+        <path d="M41.5 72 C46 68 46 76 41.5 72 Z" fill="#9D82F2" stroke="#684FB7" strokeWidth="0.8" />
+        {/* Bow Tails */}
+        <path d="M38.5 73 L35 79" stroke="#9D82F2" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M41.5 73 L45 79" stroke="#9D82F2" strokeWidth="1.5" strokeLinecap="round" />
+
+        {/* --- BACKGROUND STEMS & SPIKES (Lighter & Translucent Y=58 to 22) --- */}
+        <g opacity="0.45">
+          {/* Back Left Spike */}
+          <path d="M32 60 L24 30" stroke="#7E9B80" strokeWidth="1.5" />
+          <circle cx="24" cy="30" r="2.5" fill="#BFAEF8" />
+          <circle cx="26" cy="34" r="2" fill="#BFAEF8" />
+          <circle cx="22" cy="35" r="2" fill="#BFAEF8" />
+          <circle cx="24" cy="39" r="2.5" fill="#BFAEF8" />
+          {/* Back Right Spike */}
+          <path d="M48 60 L56 30" stroke="#7E9B80" strokeWidth="1.5" />
+          <circle cx="56" cy="30" r="2.5" fill="#BFAEF8" />
+          <circle cx="54" cy="34" r="2" fill="#BFAEF8" />
+          <circle cx="58" cy="34" r="2" fill="#BFAEF8" />
+          <circle cx="56" cy="39" r="2.5" fill="#BFAEF8" />
+          {/* Back Center-Left */}
+          <path d="M36 60 L32 24" stroke="#7E9B80" strokeWidth="1.5" />
+          <circle cx="32" cy="24" r="2.5" fill="#AC94F2" />
+          <circle cx="30" cy="28" r="2" fill="#AC94F2" />
+          <circle cx="34" cy="28" r="2" fill="#AC94F2" />
+          <circle cx="32" cy="32" r="2.5" fill="#AC94F2" />
+          {/* Back Center-Right */}
+          <path d="M44 60 L48 24" stroke="#7E9B80" strokeWidth="1.5" />
+          <circle cx="48" cy="24" r="2.5" fill="#AC94F2" />
+          <circle cx="46" cy="28" r="2" fill="#AC94F2" />
+          <circle cx="50" cy="28" r="2" fill="#AC94F2" />
+          <circle cx="48" cy="32" r="2.5" fill="#AC94F2" />
+        </g>
+
+        {/* --- FOREGROUND STEMS --- */}
+        <path d="M40 60 L40 38" stroke="#7E9B80" strokeWidth="2.8" />
+        <path d="M40 60 Q34 45 28 32" stroke="#7E9B80" strokeWidth="2.2" />
+        <path d="M40 60 Q46 45 52 32" stroke="#7E9B80" strokeWidth="2.2" />
+        <path d="M40 60 Q28 48 20 38" stroke="#7E9B80" strokeWidth="1.8" />
+        <path d="M40 60 Q52 48 60 38" stroke="#7E9B80" strokeWidth="1.8" />
+
+        {/* --- DENSE FOLIAGE BASE --- */}
+        {/* Layered dome of leaves spilling over pot rim */}
+        <path d="M40 62 C30 64 20 58 16 55 C20 52 28 54 40 62 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="0.8" />
+        <path d="M40 62 C50 64 60 58 64 55 C60 52 52 54 40 62 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="0.8" />
+        <path d="M40 62 C26 56 16 48 20 42 C24 43 30 52 40 62 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="0.8" />
+        <path d="M40 62 C54 56 64 48 60 42 C56 43 50 52 40 62 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="0.8" />
+        <path d="M40 62 C34 50 32 38 35 34 C37 35 38 48 40 62 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="0.8" />
+        <path d="M40 62 C46 50 48 38 45 34 C43 35 42 48 40 62 Z" fill="#7E9B80" stroke="#4E6550" strokeWidth="0.8" />
+        {/* Light Green Overlay Leaves */}
+        <path d="M40 62 C28 58 24 48 28 42 C31 43 33 52 40 62 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="0.8" />
+        <path d="M40 62 C52 58 56 48 52 42 C49 43 47 52 40 62 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="0.8" />
+        <path d="M40 62 C35 52 33 42 36 38 C38 39 38 50 40 62 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="0.8" />
+        <path d="M40 62 C45 52 47 42 44 38 C42 39 42 50 40 62 Z" fill="#9FBFA5" stroke="#4E6550" strokeWidth="0.8" />
+
+        {/* --- FOREGROUND FLOWER SPIKES --- */}
+        {/* 1. Outer Left (Y=38 to 18) */}
+        <path d="M20 38 L14 18" stroke="#7E9B80" strokeWidth="1.5" />
+        <path d="M20 37 C17.5 37 17.5 33 20 31 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M17 34 C14.5 34 14.5 30 17 28 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M21 34 C18.5 34 18.5 30 21 28 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M18 30 C15.5 30 15.5 26 18 24 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M15 26 C12.5 26 12.5 22 15 20 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+        <path d="M19 26 C16.5 26 16.5 22 19 20 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+        <path d="M16 22 C13.5 22 13.5 18 16 16 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+
+        {/* 2. Inner Left (Y=32 to 12) */}
+        <path d="M28 32 L22 12" stroke="#7E9B80" strokeWidth="1.8" />
+        <path d="M28 31 C25 31 25 26 28 23 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M25 28 C22 28 22 23 25 20 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M29 28 C26 28 26 23 29 20 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M26 24 C23 24 23 20 26 17 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M23 20 C20 20 20 16 23 13 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+        <path d="M27 20 C24 20 24 16 27 13 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+        <path d="M24 16 C21 16 21 12 24 9 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+
+        {/* 3. Outer Right (Y=38 to 18) */}
+        <path d="M60 38 L66 18" stroke="#7E9B80" strokeWidth="1.5" />
+        <path d="M60 37 C57.5 37 57.5 33 60 31 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M59 34 C56.5 34 56.5 30 59 28 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M63 34 C60.5 34 60.5 30 63 28 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M62 30 C59.5 30 59.5 26 62 24 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M61 26 C58.5 26 58.5 22 61 20 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+        <path d="M65 26 C62.5 26 62.5 22 65 20 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+        <path d="M64 22 C61.5 22 61.5 18 64 16 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+
+        {/* 4. Inner Right (Y=32 to 12) */}
+        <path d="M52 32 L58 12" stroke="#7E9B80" strokeWidth="1.8" />
+        <path d="M52 31 C49 31 49 26 52 23 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M51 28 C48 28 48 23 51 20 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M55 28 C52 28 52 23 55 20 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="0.8" />
+        <path d="M54 24 C51 24 51 20 54 17 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="0.8" />
+        <path d="M53 20 C50 20 50 16 53 13 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+        <path d="M57 20 C54 20 54 16 57 13 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+        <path d="M56 16 C53 16 53 12 56 9 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.8" />
+
+        {/* 5. Central Foreground (Y=38 to 6, tallest) */}
+        <path d="M40 38 L40 6" stroke="#7E9B80" strokeWidth="2.2" />
+        <path d="M40 36 C36.5 36 36.5 30 40 27 C43.5 30 43.5 36 40 36 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M37 32 C33.5 32 33.5 26 37 23 C40.5 26 40.5 32 37 32 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M43 32 C46.5 32 46.5 26 43 23 C39.5 26 39.5 32 43 32 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M40 28 C36.5 28 36.5 22 40 19 C43.5 22 43.5 28 40 28 Z" fill="#8E6FDF" stroke="#5C3FA3" strokeWidth="1" />
+        <path d="M37 24 C33.5 24 33.5 18 37 15 C40.5 18 40.5 24 37 24 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M43 24 C46.5 24 46.5 18 43 15 C39.5 18 39.5 24 43 24 Z" fill="#AC94F2" stroke="#6C4FB7" strokeWidth="1" />
+        <path d="M40 20 C36.5 20 36.5 15 40 12 C43.5 15 43.5 20 40 20 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+        <path d="M40 12 C37 12 37 7 40 4 C43 7 43 12 40 12 Z" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="1" />
+
+        {/* --- HOVERING BUTTERFLIES --- */}
+        {/* Left Butterfly */}
+        <g transform="translate(13, 35)">
+          <path d="M 0 0 C -2 -2 -4 -1 -3 1 C -2 2 0 1 0 0" fill="#9D82F2" stroke="#684FB7" strokeWidth="0.5" />
+          <path d="M 0 0 C 2 -2 4 -1 3 1 C 2 2 0 1 0 0" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.5" />
+        </g>
+        {/* Top-Right Butterfly */}
+        <g transform="translate(67, 26)">
+          <path d="M 0 0 C -2 -2 -4 -1 -3 1 C -2 2 0 1 0 0" fill="#9D82F2" stroke="#684FB7" strokeWidth="0.5" />
+          <path d="M 0 0 C 2 -2 4 -1 3 1 C 2 2 0 1 0 0" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.5" />
+        </g>
+        {/* Middle-Right Butterfly */}
+        <g transform="translate(72, 45)">
+          <path d="M 0 0 C -2 -2 -4 -1 -3 1 C -2 2 0 1 0 0" fill="#9D82F2" stroke="#684FB7" strokeWidth="0.5" />
+          <path d="M 0 0 C 2 -2 4 -1 3 1 C 2 2 0 1 0 0" fill="#BFAEF8" stroke="#7A63D4" strokeWidth="0.5" />
+        </g>
+      </svg>
+    );
+  }
+};
 
 interface TaskListProps {
   tasks: Task[];
@@ -295,40 +717,64 @@ export default function TaskList({
       </button>
 
       {/* Filter and Completion Rates bar aligned with the notebook page layout */}
-      <div className="bg-white rounded-[24px] p-4 sm:p-5 border border-[#E9E4F5] shadow-xs space-y-3.5">
-
-        {/* Top row containing Completion status and Lavender Pot in a single line */}
-        <div className="flex items-center justify-between gap-3">
-
-          {/* Completion status in the center / left of center */}
-          <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#5C42A5] flex-1 justify-start">
-            {/* Dashed circle check mark icon */}
-            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-dashed border-[#7A63D4] flex items-center justify-center bg-[#F3EEFA] shrink-0">
-              <Check className="w-3.5 h-3.5 stroke-[3] text-[#7A63D4]" />
-            </div>
-            <span className="tracking-tight text-left">Completion: {completedCount}/{totalCount} Done ({completionPercent}%)</span>
-          </div>
-
-          {/* Lavender Pot sticker on the right */}
-          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#F0EBFC] border border-[#E2D9F3] flex items-center justify-center text-[#7A63D4] shadow-xs shrink-0">
-            <LavenderPot className="w-6 h-6 sm:w-7 sm:h-7" />
-          </div>
-
+      <div className="bg-white rounded-[24px] p-4 sm:p-5 border border-[#E9E4F5] shadow-xs flex items-center justify-between gap-2.5 sm:gap-4">
+        
+        {/* Left: Dynamic Blooming plant */}
+        <div className="w-12 h-[60px] sm:w-14 sm:h-[70px] flex items-center justify-center shrink-0 translate-y-1 sm:translate-y-1.5">
+          <LavenderBloom progress={completionPercent} className="w-full h-full" />
         </div>
 
-        {/* Completion Progress Bar */}
-        <div className="flex items-center gap-2 pt-0.5">
-          <div className="flex-1 h-3.5 bg-[#F3EEFA] rounded-full overflow-hidden border border-[#E9E4F5] relative">
+        {/* Center Column: Title + Subtitle + Done text + Progress bar */}
+        <div className="flex-1 flex flex-col items-center text-center gap-1 min-w-0 px-2 sm:px-4">
+          {/* Title */}
+          <h4 className="font-serif text-sm sm:text-base font-bold text-[#5C42A5] tracking-wide leading-none">
+            Blooming Progress
+          </h4>
+          {/* Subtitle */}
+          {completionPercent === 100 ? (
+            <div className="flex flex-col items-center gap-0.5">
+              <p className="font-serif italic text-[10px] sm:text-[11px] font-bold text-[#5C42A5] leading-tight flex items-center justify-center gap-1">
+                Your day has fully bloomed!
+                <svg viewBox="0 0 24 24" fill="none" stroke="#7A63D4" strokeWidth="2.2" className="w-3.5 h-3.5 shrink-0">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              </p>
+              <p className="font-serif text-[9px] sm:text-[10px] text-[#7A63D4] leading-tight flex items-center justify-center gap-1.5 mt-0.5">
+                <span>Well done! You earned <strong className="text-[#5C42A5] font-extrabold">+50 XP</strong></span>
+                <span className="w-4 h-4 bg-gradient-to-br from-[#FFFCEF] to-[#FFF1B8] rounded-full flex items-center justify-center border border-[#FFE78A] shadow-2xs shrink-0">
+                  <svg viewBox="0 0 24 24" fill="#E28A07" className="w-2.5 h-2.5">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                  </svg>
+                </span>
+              </p>
+            </div>
+          ) : (
+            <p className="font-serif italic text-[9px] sm:text-[10px] text-[#7A63D4] leading-tight">
+              Your day blooms with every completed task. <span className="text-[#9D82F2] text-[10px]">💜</span>
+            </p>
+          )}
+          {/* Done status */}
+          <div className="text-[9px] sm:text-[10px] font-semibold text-[#8A75DE] tracking-wide font-sans mt-0.5">
+            {completedCount}/{totalCount} done
+          </div>
+          {/* Progress Bar (stretched full width of center column) */}
+          <div className="w-full h-2 bg-[#F3EEFA] rounded-full overflow-hidden border border-[#E9E4F5] relative shadow-inner mt-1">
             <div
-              className="h-full rounded-full transition-all duration-500 shadow-inner"
+              className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${completionPercent}%`,
                 backgroundImage: 'repeating-linear-gradient(45deg, #9D82F2, #9D82F2 10px, #BFAEF8 10px, #BFAEF8 20px)'
               }}
             />
           </div>
-          {/* Sparkle icon at the end */}
-          <span className="text-[#9D82F2] text-sm animate-pulse">✦</span>
+        </div>
+
+        {/* Right: Sparkles (aligned on the right of the card) */}
+        <div className="shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 sm:w-5 sm:h-5 select-none pointer-events-none opacity-85">
+            <path d="M 20 5 C 20 15, 15 20, 5 20 C 15 20, 20 25, 20 35 C 20 25, 25 20, 35 20 C 25 20, 20 15, 20 5 Z" fill="#9D82F2" />
+            <path d="M 38 25 C 38 30, 35 32, 30 32 C 35 32, 38 34, 38 39 C 38 34, 41 32, 46 32 C 41 32, 38 30, 38 25 Z" fill="#BFAEF8" />
+          </svg>
         </div>
       </div>
 
