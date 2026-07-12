@@ -6,12 +6,13 @@ import {
   Calendar,
   Star,
   Sparkles,
-  Filter,
   CheckCircle,
   Plus,
   Pencil,
   Heart,
-  Check
+  Check,
+  LayoutGrid,
+  Circle
 } from 'lucide-react';
 import { soundEffects } from '../utils/audio';
 
@@ -139,7 +140,7 @@ export default function TaskList({
   onCreateTaskClick,
   onEditTaskClick
 }: TaskListProps) {
-  const [filterCategory, setFilterCategory] = useState<TaskCategory | 'All'>('All');
+  const [statusFilter, setStatusFilter] = useState<'All' | 'Completed' | 'Pending'>('All');
   const [filterFrequency, setFilterFrequency] = useState<TaskFrequency | 'All'>('Daily');
   const [selectedMood, setSelectedMood] = useState<string | null>(() => {
     return localStorage.getItem('chore_book_mood') || null;
@@ -162,9 +163,11 @@ export default function TaskList({
 
   // Filter tasks based on selected filter options
   const filteredTasks = tasks.filter((task) => {
-    const categoryMatch = filterCategory === 'All' || task.category === filterCategory;
     const frequencyMatch = filterFrequency === 'All' || (task.frequency as string) === (filterFrequency as string);
-    return categoryMatch && frequencyMatch;
+    const statusMatch = statusFilter === 'All' || 
+      (statusFilter === 'Completed' && task.status === 'Completed') ||
+      (statusFilter === 'Pending' && task.status === 'Pending');
+    return frequencyMatch && statusMatch;
   });
 
   // Calculate completion percentage
@@ -261,32 +264,8 @@ export default function TaskList({
       {/* Filter and Completion Rates bar aligned with the notebook page layout */}
       <div className="bg-white rounded-[24px] p-4 sm:p-5 border border-[#E9E4F5] shadow-xs space-y-3.5">
 
-        {/* Top row containing Filter icon, Completion status, and Lavender Pot in a single line */}
+        {/* Top row containing Completion status and Lavender Pot in a single line */}
         <div className="flex items-center justify-between gap-3">
-
-          {/* Funnel filter icon button acting as category selector dropdown */}
-          <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#F0EBFC] border border-[#E2D9F3] flex items-center justify-center text-[#7A63D4] hover:bg-[#EAE2FC] shadow-xs shrink-0 cursor-pointer transition-all active:scale-95">
-            <Filter className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
-
-            {/* Invisible select overlay filling the entire button */}
-            <select
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value as TaskCategory | 'All')}
-              title="Filter by Category"
-            >
-              <option value="All">🌌 All Categories</option>
-              <option value="Chore">🧹 Chores</option>
-              <option value="Routine">🔄 Routines</option>
-              <option value="Exercise">🏃‍♂️ Exercises</option>
-              <option value="Goal">🎯 Goals</option>
-            </select>
-
-            {/* Small indicator dot showing an active filter */}
-            {filterCategory !== 'All' && (
-              <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-[#9D82F2] rounded-full border border-white animate-pulse" />
-            )}
-          </div>
 
           {/* Completion status in the center / left of center */}
           <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#5C42A5] flex-1 justify-start">
@@ -326,9 +305,9 @@ export default function TaskList({
         {/* The beautiful white physical notebook page */}
         <div className="relative bg-white border border-[#E9E4F5] rounded-r-[24px] rounded-l-[10px] sm:rounded-r-[32px] sm:rounded-l-[14px] shadow-lg py-5 pr-3 pl-8 sm:py-8 sm:pr-8 sm:pl-10 min-h-[480px] flex flex-col justify-between pointer-events-auto">
 
-          {/* Premium Ring Binder Loops — 15 compact smooth oval chrome wire loops with purple eyelets */}
-          <div className="absolute left-[-16px] sm:left-[-16px] top-0 bottom-0 flex flex-col justify-between py-8 pointer-events-none z-20">
-            {Array.from({ length: 15 }).map((_, i) => (
+          {/* Premium Ring Binder Loops — Spaced uniformly using a fixed CSS gap to prevent stretching/squishing on filter changes */}
+          <div className="absolute left-[-16px] sm:left-[-16px] top-0 bottom-0 flex flex-col gap-6 py-8 overflow-hidden pointer-events-none z-20">
+            {Array.from({ length: 35 }).map((_, i) => (
               <div key={i} className="relative flex items-center justify-center w-[32px] h-[28px]">
                 <svg width="32" height="28" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
                   <defs>
@@ -403,6 +382,31 @@ export default function TaskList({
                 <p className="font-sans text-xs sm:text-sm font-medium text-[#7E7399] tracking-wider mt-2.5">
                   Small steps, a better you.
                 </p>
+
+                {/* Status Filter Bar */}
+                <div className="w-full bg-[#FAF8FF] border border-[#EBE5F7] rounded-full p-1 flex items-center justify-between gap-1 mt-5 pointer-events-auto">
+                  {[
+                    { key: 'All', label: 'All', icon: <LayoutGrid className="w-3.5 h-3.5" /> },
+                    { key: 'Completed', label: 'Completed', icon: <CheckCircle className="w-3.5 h-3.5" /> },
+                    { key: 'Pending', label: 'Not Completed', icon: <Circle className="w-3.5 h-3.5" /> },
+                  ].map((tab) => {
+                    const isActive = statusFilter === tab.key;
+                    return (
+                      <button
+                        key={tab.key}
+                        onClick={() => setStatusFilter(tab.key as 'All' | 'Completed' | 'Pending')}
+                        className={`flex-1 py-2 px-1 sm:px-3 rounded-full text-[10px] sm:text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap ${
+                          isActive
+                            ? 'bg-[#E5DCFC] text-[#5C42A5] shadow-xs'
+                            : 'text-[#7E7399] hover:bg-[#F3EEFA]/50 hover:text-[#5C42A5]'
+                        }`}
+                      >
+                        {tab.icon}
+                        <span>{tab.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
 
@@ -416,149 +420,122 @@ export default function TaskList({
                   </p>
                 </div>
               ) : (
-                <div className="relative z-10 space-y-10 pb-6">
-                  {[
-                    { key: 'Chore', label: 'CHORES', emoji: '🧹' },
-                    { key: 'Routine', label: 'ROUTINES', emoji: '🔄' },
-                    { key: 'Exercise', label: 'EXERCISES', emoji: '🏃‍♂️' },
-                    { key: 'Goal', label: 'GOALS', emoji: '🎯' }
-                  ].map((cat) => {
-                    const catTasks = filteredTasks.filter(t => t.category === cat.key as TaskCategory);
-                    if (catTasks.length === 0) return null;
+                <div className="relative z-10 space-y-3 pb-6 mt-6">
+                  {filteredTasks.map((task) => {
+                    const assignees = getAssigneeProfiles(task.assignedTo);
+                    const isCompleted = task.status === 'Completed';
 
                     return (
-                      <div key={cat.key} className="relative border border-[#E2D9F3] rounded-[24px] p-3 sm:p-5 pt-6 sm:pt-8 mt-5 bg-white">
-
-                        {/* Elegant Category Badge Pill aligned on the border */}
-                        <div className="absolute -top-3.5 left-6">
-                          <span className="bg-[#F0EBFC] text-[#7A63D4] font-black tracking-wider text-[10px] sm:text-[11px] uppercase px-3.5 py-1 rounded-full inline-flex items-center gap-1.5 shadow-xs border border-[#E2D9F3] whitespace-nowrap">
-                            <span>{cat.emoji}</span>
-                            <span>{cat.label}</span>
-                          </span>
+                      <div
+                        key={task.id}
+                        className="bg-white rounded-[20px] sm:rounded-[24px] p-2.5 sm:p-5 border border-[#F0EBF9] shadow-xs hover:shadow-md transition-all relative flex gap-2.5 sm:gap-4 group overflow-hidden"
+                      >
+                        {/* Left column: Checkbox */}
+                        <div className="flex flex-col items-center shrink-0 pt-0.5">
+                          {isCompleted ? (
+                            <button
+                              onClick={() => onToggleComplete(task)}
+                              className="w-5 h-5 sm:w-6 sm:h-6 rounded-[6px] sm:rounded-[8px] bg-[#9D82F2] border border-[#9D82F2] flex items-center justify-center text-white cursor-pointer hover:bg-purple-600 transition-colors shrink-0"
+                            >
+                              <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => onToggleComplete(task)}
+                              className="w-5 h-5 sm:w-6 sm:h-6 rounded-[6px] sm:rounded-[8px] border-2 border-[#E0D9F0] hover:border-purple-400 bg-white transition-all cursor-pointer shrink-0"
+                            />
+                          )}
                         </div>
 
-                        {/* List items */}
-                        <div className="space-y-3">
-                          {catTasks.map((task) => {
-                            const assignees = getAssigneeProfiles(task.assignedTo);
-                            const isCompleted = task.status === 'Completed';
+                        {/* Right column: All text details and actions */}
+                        <div className="flex-1 min-w-0 flex flex-col gap-1 sm:gap-1.5">
+                          {/* Title block with category icon */}
+                          <div className="flex items-start gap-1.5 sm:gap-2">
+                            <span className="text-sm sm:text-lg select-none shrink-0 mt-0.5">
+                              {task.category === 'Chore' && '🧹'}
+                              {task.category === 'Routine' && '🔄'}
+                              {task.category === 'Exercise' && '🏃‍♂️'}
+                              {task.category === 'Goal' && '🎯'}
+                            </span>
+                            <h4 className={`font-sans font-bold text-xs sm:text-base text-[#3B2961] tracking-wide leading-snug transition-all ${isCompleted ? 'line-through text-slate-400 opacity-70' : ''
+                              }`}>
+                              {task.title}
+                            </h4>
+                          </div>
 
-                            return (
-                              <div
-                                key={task.id}
-                                className="bg-white rounded-[20px] sm:rounded-[24px] p-2.5 sm:p-5 border border-[#F0EBF9] shadow-xs hover:shadow-md transition-all relative flex gap-2.5 sm:gap-4 group overflow-hidden"
-                              >
-                                {/* Left column: Checkbox */}
-                                <div className="flex flex-col items-center shrink-0 pt-0.5">
-                                  {isCompleted ? (
-                                    <button
-                                      onClick={() => onToggleComplete(task)}
-                                      className="w-5 h-5 sm:w-6 sm:h-6 rounded-[6px] sm:rounded-[8px] bg-[#9D82F2] border border-[#9D82F2] flex items-center justify-center text-white cursor-pointer hover:bg-purple-600 transition-colors shrink-0"
-                                    >
-                                      <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
-                                    </button>
-                                  ) : (
-                                    <button
-                                      onClick={() => onToggleComplete(task)}
-                                      className="w-5 h-5 sm:w-6 sm:h-6 rounded-[6px] sm:rounded-[8px] border-2 border-[#E0D9F0] hover:border-purple-400 bg-white transition-all cursor-pointer shrink-0"
-                                    />
-                                  )}
-                                </div>
+                          {/* Description */}
+                          {task.description && (
+                            <p className={`text-[11px] sm:text-[13px] text-[#7E7399] font-medium leading-relaxed pl-1 ${isCompleted ? 'line-through text-slate-400/60' : ''
+                              }`}>
+                              {task.description}
+                            </p>
+                          )}
 
-                                {/* Right column: All text details and actions */}
-                                <div className="flex-1 min-w-0 flex flex-col gap-1 sm:gap-1.5">
-                                  {/* Title block with category icon */}
-                                  <div className="flex items-start gap-1.5 sm:gap-2">
-                                    <span className="text-sm sm:text-lg select-none shrink-0 mt-0.5">
-                                      {task.category === 'Chore' && '🧹'}
-                                      {task.category === 'Routine' && '🔄'}
-                                      {task.category === 'Exercise' && '🏃‍♂️'}
-                                      {task.category === 'Goal' && '🎯'}
-                                    </span>
-                                    <h4 className={`font-sans font-bold text-xs sm:text-base text-[#3B2961] tracking-wide leading-snug transition-all ${isCompleted ? 'line-through text-slate-400 opacity-70' : ''
-                                      }`}>
-                                      {task.title}
-                                    </h4>
+                          {/* Clock, XP reward and Completion bubble row */}
+                          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 pt-0.5 pl-1">
+                            {task.timeOfDay && (
+                              <span className="flex items-center gap-1 text-[10px] sm:text-xs text-[#7E7399] font-medium">
+                                <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#A699C7]" />
+                                <span>{task.timeOfDay}</span>
+                              </span>
+                            )}
+
+                            {task.timeOfDay && <span className="text-[#E1D8F5] text-[10px] sm:text-xs">|</span>}
+
+                            <span className="flex items-center gap-1 text-[10px] sm:text-xs text-[#C19519] font-bold">
+                              <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-[#F6C644] text-[#C19519]" />
+                              <span>+{task.xpReward} XP</span>
+                            </span>
+
+                            {isCompleted && (
+                              <>
+                                <span className="text-[#E1D8F5] text-[10px] sm:text-xs">|</span>
+                                <span className="bg-[#F0EBFC] text-[#7A63D4] font-bold text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-[6px] sm:rounded-[8px] tracking-wide shrink-0">
+                                  Completed
+                                </span>
+                              </>
+                            )}
+                          </div>
+
+                          {/* Bottom footer row containing assignee details & edit actions */}
+                          <div className="flex items-center justify-between gap-2 border-t border-[#F5F0FC] pt-2 mt-1.5 pl-1">
+                            <div className="flex items-center gap-1">
+                              <span className="text-[10px] sm:text-xs text-[#A699C7] font-medium">Assigned:</span>
+                              <div className="flex -space-x-1.5 overflow-hidden">
+                                {assignees.map((member) => (
+                                  <div
+                                    key={member.uid}
+                                    className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#F0EBFC] border-2 border-white flex items-center justify-center text-[10px] sm:text-xs shadow-xs"
+                                    title={member.displayName}
+                                  >
+                                    {member.avatarEmoji}
                                   </div>
-
-                                  {/* Description */}
-                                  {task.description && (
-                                    <p className={`text-[11px] sm:text-[13px] text-[#7E7399] font-medium leading-relaxed pl-1 ${isCompleted ? 'line-through text-slate-400/60' : ''
-                                      }`}>
-                                      {task.description}
-                                    </p>
-                                  )}
-
-                                  {/* Clock, XP reward and Completion bubble row */}
-                                  <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 pt-0.5 pl-1">
-                                    {task.timeOfDay && (
-                                      <span className="flex items-center gap-1 text-[10px] sm:text-xs text-[#7E7399] font-medium">
-                                        <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#A699C7]" />
-                                        <span>{task.timeOfDay}</span>
-                                      </span>
-                                    )}
-
-                                    {task.timeOfDay && <span className="text-[#E1D8F5] text-[10px] sm:text-xs">|</span>}
-
-                                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-[#C19519] font-bold">
-                                      <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-[#F6C644] text-[#C19519]" />
-                                      <span>+{task.xpReward} XP</span>
-                                    </span>
-
-                                    {isCompleted && (
-                                      <>
-                                        <span className="text-[#E1D8F5] text-[10px] sm:text-xs">|</span>
-                                        <span className="bg-[#F0EBFC] text-[#7A63D4] font-bold text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-[6px] sm:rounded-[8px] tracking-wide shrink-0">
-                                          Completed
-                                        </span>
-                                      </>
-                                    )}
-                                  </div>
-
-                                  {/* Bottom footer row containing assignee details & edit actions */}
-                                  <div className="flex items-center justify-between gap-2 border-t border-[#F5F0FC] pt-2 mt-1.5 pl-1">
-                                    <div className="flex items-center gap-1">
-                                      <span className="text-[10px] sm:text-xs text-[#A699C7] font-medium">Assigned:</span>
-                                      <div className="flex -space-x-1.5 overflow-hidden">
-                                        {assignees.map((member) => (
-                                          <div
-                                            key={member.uid}
-                                            className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#F0EBFC] border-2 border-white flex items-center justify-center text-[10px] sm:text-xs shadow-xs"
-                                            title={member.displayName}
-                                          >
-                                            {member.avatarEmoji}
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-0.5 text-[#A699C7]">
-                                      {onEditTaskClick && (
-                                        <button
-                                          onClick={() => onEditTaskClick(task)}
-                                          className="p-1 sm:p-1.5 hover:bg-[#F3EEFA] hover:text-[#7A63D4] rounded-lg transition-all cursor-pointer"
-                                          title="Edit Chore"
-                                        >
-                                          <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                        </button>
-                                      )}
-                                      <span className="h-3 w-[1px] bg-[#E1D8F5] mx-0.5" />
-                                      <button
-                                        onClick={() => onDeleteTask(task.id)}
-                                        className="p-1 sm:p-1.5 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all cursor-pointer"
-                                        title="Delete Chore"
-                                      >
-                                        <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-400" />
-                                      </button>
-                                    </div>
-                                  </div>
-
-                                </div>
+                                ))}
                               </div>
-                            );
-                          })}
-                        </div>
+                            </div>
 
+                            <div className="flex items-center gap-0.5 text-[#A699C7]">
+                              {onEditTaskClick && (
+                                <button
+                                  onClick={() => onEditTaskClick(task)}
+                                  className="p-1 sm:p-1.5 hover:bg-[#F3EEFA] hover:text-[#7A63D4] rounded-lg transition-all cursor-pointer"
+                                  title="Edit Chore"
+                                >
+                                  <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                </button>
+                              )}
+                              <span className="h-3 w-[1px] bg-[#E1D8F5] mx-0.5" />
+                              <button
+                                onClick={() => onDeleteTask(task.id)}
+                                className="p-1 sm:p-1.5 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all cursor-pointer"
+                                title="Delete Chore"
+                              >
+                                <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-400" />
+                              </button>
+                            </div>
+                          </div>
+
+                        </div>
                       </div>
                     );
                   })}
