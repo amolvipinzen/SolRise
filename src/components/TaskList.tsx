@@ -386,7 +386,7 @@ export default function TaskList({
                 {/* Status Filter Bar */}
                 <div className="w-full bg-[#FAF8FF] border border-[#EBE5F7] rounded-full p-1 flex items-center justify-between gap-1 mt-5 pointer-events-auto">
                   {[
-                    { key: 'All', label: 'All', icon: <LayoutGrid className="w-3.5 h-3.5" /> },
+                    { key: 'All', label: 'All', icon: <LayoutGrid className="w-3.5 h-3.5" fill="currentColor" /> },
                     { key: 'Completed', label: 'Completed', icon: <CheckCircle className="w-3.5 h-3.5" /> },
                     { key: 'Pending', label: 'Not Completed', icon: <Circle className="w-3.5 h-3.5" /> },
                   ].map((tab) => {
