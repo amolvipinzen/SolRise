@@ -16,72 +16,88 @@ import {
 } from 'lucide-react';
 import { soundEffects } from '../utils/audio';
 
-// Deluxe watercolor-style lavender sprig component matching the screenshot (3 branches merging at the stem)
+// Deluxe iOS-style single botanical lavender sprig component with clean, defined shapes
 export const LavenderSprig = ({ className = "w-12 h-12" }: { className?: string }) => (
-  <svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    {/* Stems */}
-    {/* Main central stem */}
-    <path d="M60 145 C60 115 58 85 60 45" stroke="#718F5B" strokeWidth="2.5" strokeLinecap="round" />
-    {/* Left branch stem */}
-    <path d="M60 120 C48 105 38 85 40 65" stroke="#718F5B" strokeWidth="2" strokeLinecap="round" />
-    {/* Right branch stem */}
-    <path d="M60 115 C72 100 82 85 78 65" stroke="#718F5B" strokeWidth="2" strokeLinecap="round" />
+  <svg viewBox="0 0 100 140" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    {/* Stem: Slender muted sage green (#7FA36A) */}
+    <path d="M50 132 C50 98 50 64 50 25" stroke="#7FA36A" strokeWidth="2.2" strokeLinecap="round" />
 
-    {/* Leaves */}
-    <path d="M58 135 C50 135 46 128 52 125 C58 122 60 128 58 135 Z" fill="#718F5B" />
-    <path d="M62 125 C70 125 74 118 68 115 C62 112 60 118 62 125 Z" fill="#718F5B" />
-    <path d="M48 100 C38 98 36 90 44 92 C52 94 52 98 48 100 Z" fill="#718F5B" />
-    <path d="M72 95 C82 93 84 85 76 87 C68 89 68 93 72 95 Z" fill="#718F5B" />
+    {/* Leaves: Linear-lanceolate pairs along the base */}
+    {/* Pair 1 */}
+    <path d="M49 115 C42 113 38 107 40 101 C42 98 45 101 49 109 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
+    <path d="M51 113 C58 111 62 105 60 99 C58 96 55 99 51 107 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
+    {/* Pair 2 */}
+    <path d="M49 95 C43 93 40 88 42 82 C44 79 46 82 49 89 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
+    <path d="M51 94 C57 92 60 87 58 81 C56 78 54 81 51 88 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
+    {/* Pair 3 */}
+    <path d="M49 76 C45 74 42 70 44 65 C45 62 47 65 49 71 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
+    <path d="M51 75 C55 73 58 69 56 64 C55 61 53 64 51 70 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
 
-    {/* Main central lavender flowers */}
-    {/* Layer 1 (Bottom) */}
-    <circle cx="54" cy="85" r="4.5" fill="#886AE6" />
-    <circle cx="66" cy="83" r="4.5" fill="#9D82F2" />
-    <circle cx="60" cy="80" r="5" fill="#7C5DDF" />
+    {/* Florets: 8 distinct, vertically stacked clusters (verticillasters) */}
+    {/* Cluster 1 (y=84) */}
+    <g transform="translate(50, 84)">
+      <ellipse cx="-6" cy="0" rx="2.2" ry="3.5" transform="rotate(-45)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="6" cy="0" rx="2.2" ry="3.5" transform="rotate(45)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="-3.5" cy="-3" rx="1.8" ry="3" transform="rotate(-20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="3.5" cy="-3" rx="1.8" ry="3" transform="rotate(20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="0" cy="-5" rx="1.8" ry="3" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
+    </g>
 
-    {/* Layer 2 */}
-    <circle cx="53" cy="68" r="5" fill="#9D82F2" />
-    <circle cx="67" cy="66" r="5" fill="#886AE6" />
-    <circle cx="60" cy="62" r="5.5" fill="#AF98F5" />
+    {/* Cluster 2 (y=75) */}
+    <g transform="translate(50, 75)">
+      <ellipse cx="-5.5" cy="0" rx="2.2" ry="3.5" transform="rotate(-40)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="5.5" cy="0" rx="2.2" ry="3.5" transform="rotate(40)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="-3.2" cy="-3" rx="1.8" ry="3" transform="rotate(-20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="3.2" cy="-3" rx="1.8" ry="3" transform="rotate(20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="0" cy="-5" rx="1.8" ry="3" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
+    </g>
 
-    {/* Layer 3 */}
-    <circle cx="54" cy="51" r="4.5" fill="#886AE6" />
-    <circle cx="66" cy="49" r="4.5" fill="#9D82F2" />
-    <circle cx="60" cy="45" r="5" fill="#BFAEF8" />
+    {/* Cluster 3 (y=66) */}
+    <g transform="translate(50, 66)">
+      <ellipse cx="-5" cy="0" rx="2" ry="3.2" transform="rotate(-35)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="5" cy="0" rx="2" ry="3.2" transform="rotate(35)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="-3" cy="-2.8" rx="1.8" ry="2.8" transform="rotate(-15)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="3" cy="-2.8" rx="1.8" ry="2.8" transform="rotate(15)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="0" cy="-4.5" rx="1.8" ry="3" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
+    </g>
 
-    {/* Layer 4 (Top) */}
-    <circle cx="55" cy="36" r="3.5" fill="#9D82F2" />
-    <circle cx="65" cy="35" r="3.5" fill="#886AE6" />
-    <circle cx="60" cy="31" r="4" fill="#AF98F5" />
-    <circle cx="60" cy="24" r="3" fill="#D3C7FC" />
+    {/* Cluster 4 (y=57) */}
+    <g transform="translate(50, 57)">
+      <ellipse cx="-4.5" cy="0" rx="2" ry="3.2" transform="rotate(-30)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="4.5" cy="0" rx="2" ry="3.2" transform="rotate(30)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="-2.8" cy="-2.5" rx="1.6" ry="2.6" transform="rotate(-15)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="2.8" cy="-2.5" rx="1.6" ry="2.6" transform="rotate(15)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="0" cy="-4" rx="1.6" ry="2.8" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
+    </g>
 
-    {/* Left sprig flowers */}
-    <circle cx="34" cy="80" r="3.5" fill="#886AE6" />
-    <circle cx="44" cy="78" r="3.5" fill="#9D82F2" />
-    <circle cx="39" cy="74" r="4" fill="#7C5DDF" />
+    {/* Cluster 5 (y=48) */}
+    <g transform="translate(50, 48)">
+      <ellipse cx="-4" cy="0" rx="1.8" ry="3" transform="rotate(-30)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="4" cy="0" rx="1.8" ry="3" transform="rotate(30)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="0" cy="-3.5" rx="1.6" ry="2.6" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="0" cy="1" rx="1.2" ry="2" fill="#D8C9FF" stroke="#5C42A5" strokeWidth="0.8" />
+    </g>
 
-    <circle cx="35" cy="64" r="4" fill="#9D82F2" />
-    <circle cx="45" cy="62" r="4" fill="#886AE6" />
-    <circle cx="40" cy="58" r="4.5" fill="#AF98F5" />
+    {/* Cluster 6 (y=39) */}
+    <g transform="translate(50, 39)">
+      <ellipse cx="-3.5" cy="0" rx="1.8" ry="2.8" transform="rotate(-25)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="3.5" cy="0" rx="1.8" ry="2.8" transform="rotate(25)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="0" cy="-3" rx="1.4" ry="2.4" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
+    </g>
 
-    <circle cx="36" cy="50" r="3" fill="#886AE6" />
-    <circle cx="44" cy="49" r="3" fill="#9D82F2" />
-    <circle cx="40" cy="45" r="3.5" fill="#BFAEF8" />
-    <circle cx="40" cy="39" r="2.5" fill="#D3C7FC" />
+    {/* Cluster 7 (y=30) */}
+    <g transform="translate(50, 30)">
+      <ellipse cx="-2.8" cy="0" rx="1.6" ry="2.4" transform="rotate(-20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="2.8" cy="0" rx="1.6" ry="2.4" transform="rotate(20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="0" cy="-2.5" rx="1.2" ry="2" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
+    </g>
 
-    {/* Right sprig flowers */}
-    <circle cx="73" cy="82" r="3.5" fill="#886AE6" />
-    <circle cx="83" cy="80" r="3.5" fill="#9D82F2" />
-    <circle cx="78" cy="76" r="4" fill="#7C5DDF" />
-
-    <circle cx="72" cy="66" r="4" fill="#9D82F2" />
-    <circle cx="82" cy="64" r="4" fill="#886AE6" />
-    <circle cx="77" cy="60" r="4.5" fill="#AF98F5" />
-
-    <circle cx="73" cy="52" r="3" fill="#886AE6" />
-    <circle cx="81" cy="51" r="3" fill="#9D82F2" />
-    <circle cx="77" cy="47" r="3.5" fill="#BFAEF8" />
-    <circle cx="77" cy="41" r="2.5" fill="#D3C7FC" />
+    {/* Cluster 8 (y=21) */}
+    <g transform="translate(50, 21)">
+      <ellipse cx="-2" cy="0" rx="1.2" ry="2" transform="rotate(-15)" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="2" cy="0" rx="1.2" ry="2" transform="rotate(15)" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
+      <ellipse cx="0" cy="-2" rx="1" ry="1.6" fill="#D8C9FF" stroke="#5C42A5" strokeWidth="0.8" />
+    </g>
   </svg>
 );
 
@@ -355,16 +371,17 @@ export default function TaskList({
               {/* Notebook Header */}
               <div className="relative z-10 mb-6 pb-4 border-b border-[#F0EBFC] flex flex-col items-center text-center">
 
-                {/* Title row — lavender left (absolute), title centered, list button right (absolute) */}
+                {/* Title row — title centered, list button right (absolute) */}
                 <div className="relative w-full flex items-center justify-center py-1">
 
-                  {/* Lavender sprig — absolute left, purely decorative */}
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 select-none pointer-events-none">
-                    <LavenderSprig className="w-9 h-12 sm:w-11 sm:h-14 transform -rotate-6" />
-                  </div>
-
                   {/* Title + sparkle — always centered regardless of side elements */}
-                  <div className="flex items-center gap-1">
+                  <div className="relative flex items-center gap-1">
+
+                    {/* Lavender sprig — positioned absolutely to the left of the centered title */}
+                    <div className="absolute right-[calc(100%+14px)] top-1/2 -translate-y-1/2 select-none pointer-events-none shrink-0">
+                      <LavenderSprig className="w-[48px] h-[64px] sm:w-[62px] sm:h-[84px] transform rotate-12" />
+                    </div>
+
                     <h3 className="font-caveat text-4xl sm:text-[50px] font-bold text-[#533FA2] tracking-wide whitespace-nowrap leading-none">
                       Daily Chores
                     </h3>
@@ -374,8 +391,6 @@ export default function TaskList({
                       <path d="M 28 38 C 28 41, 26 42, 23 42 C 26 42, 28 43, 28 46 C 28 43, 30 42, 33 42 C 30 42, 28 41, 28 38 Z" fill="#DCD4FF" />
                     </svg>
                   </div>
-
-                  {/* List button — removed */}
                 </div>
 
                 {/* Subtitle */}
