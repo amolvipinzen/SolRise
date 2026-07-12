@@ -388,17 +388,17 @@ export default function TaskList({
                   {[
                     { key: 'All', label: 'All', icon: <LayoutGrid className="w-3.5 h-3.5" fill="currentColor" /> },
                     { key: 'Completed', label: 'Completed', icon: <CheckCircle className="w-3.5 h-3.5" /> },
-                    { key: 'Pending', label: 'Not Completed', icon: <Circle className="w-3.5 h-3.5" /> },
+                    { key: 'Pending', label: 'Not Completed', icon: <Circle className="w-3.5 h-3.5" strokeDasharray="3 3" /> },
                   ].map((tab) => {
                     const isActive = statusFilter === tab.key;
                     return (
                       <button
                         key={tab.key}
                         onClick={() => setStatusFilter(tab.key as 'All' | 'Completed' | 'Pending')}
-                        className={`flex-1 py-2 px-1 sm:px-3 rounded-full text-[10px] sm:text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap ${
+                        className={`flex-1 py-2 px-1 sm:px-3 rounded-full text-[10px] sm:text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap text-[#5C42A5] ${
                           isActive
-                            ? 'bg-[#E5DCFC] text-[#5C42A5] shadow-xs'
-                            : 'text-[#7E7399] hover:bg-[#F3EEFA]/50 hover:text-[#5C42A5]'
+                            ? 'bg-[#E5DCFC] shadow-xs'
+                            : 'hover:bg-[#F3EEFA]/50'
                         }`}
                       >
                         {tab.icon}
