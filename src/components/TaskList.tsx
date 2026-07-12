@@ -725,40 +725,45 @@ export default function TaskList({
         </div>
 
         {/* Center Column: Title + Subtitle + Done text + Progress bar */}
-        <div className="flex-1 flex flex-col items-center text-center gap-1 min-w-0 px-2 sm:px-4">
+        <div className="flex-1 flex flex-col items-center text-center gap-1.5 min-w-0 px-2 sm:px-4">
           {/* Title */}
           <h4 className="font-serif text-sm sm:text-base font-bold text-[#5C42A5] tracking-wide leading-none">
             Blooming Progress
           </h4>
-          {/* Subtitle */}
+
+          {/* Subheading Line 1 */}
           {completionPercent === 100 ? (
-            <div className="flex flex-col items-center gap-0.5">
-              <p className="font-serif italic text-[10px] sm:text-[11px] font-bold text-[#5C42A5] leading-tight flex items-center justify-center gap-1">
-                Your day has fully bloomed!
-                <svg viewBox="0 0 24 24" fill="none" stroke="#7A63D4" strokeWidth="2.2" className="w-3.5 h-3.5 shrink-0">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-              </p>
-              <p className="font-serif text-[9px] sm:text-[10px] text-[#7A63D4] leading-tight flex items-center justify-center gap-1.5 mt-0.5">
-                <span>Well done! You earned <strong className="text-[#5C42A5] font-extrabold">+50 XP</strong></span>
-                <span className="w-4 h-4 bg-gradient-to-br from-[#FFFCEF] to-[#FFF1B8] rounded-full flex items-center justify-center border border-[#FFE78A] shadow-2xs shrink-0">
-                  <svg viewBox="0 0 24 24" fill="#E28A07" className="w-2.5 h-2.5">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                  </svg>
-                </span>
-              </p>
-            </div>
+            <p className="font-serif italic text-[10px] sm:text-[11px] font-bold text-[#5C42A5] leading-tight flex items-center justify-center gap-1">
+              Your day has fully bloomed!
+              <svg viewBox="0 0 24 24" fill="none" stroke="#7A63D4" strokeWidth="2.2" className="w-3.5 h-3.5 shrink-0">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+            </p>
           ) : (
             <p className="font-serif italic text-[9px] sm:text-[10px] text-[#7A63D4] leading-tight">
               Your day blooms with every completed task. <span className="text-[#9D82F2] text-[10px]">💜</span>
             </p>
           )}
+
+          {/* Subheading Line 2 (Only at 100%) */}
+          {completionPercent === 100 && (
+            <p className="font-serif text-[9px] sm:text-[10px] text-[#7A63D4] leading-tight flex items-center justify-center gap-1.5">
+              <span>Well done! You earned <strong className="text-[#5C42A5] font-extrabold">+50 XP</strong></span>
+              <span className="w-4 h-4 bg-gradient-to-br from-[#FFFCEF] to-[#FFF1B8] rounded-full flex items-center justify-center border border-[#FFE78A] shadow-2xs shrink-0">
+                <svg viewBox="0 0 24 24" fill="#E28A07" className="w-2.5 h-2.5">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                </svg>
+              </span>
+            </p>
+          )}
+
           {/* Done status */}
-          <div className="text-[9px] sm:text-[10px] font-semibold text-[#8A75DE] tracking-wide font-sans mt-0.5">
+          <div className="text-[9px] sm:text-[10px] font-semibold text-[#8A75DE] tracking-wide font-sans">
             {completedCount}/{totalCount} done
           </div>
+
           {/* Progress Bar (stretched full width of center column) */}
-          <div className="w-full h-2 bg-[#F3EEFA] rounded-full overflow-hidden border border-[#E9E4F5] relative shadow-inner mt-1">
+          <div className="w-full h-2 bg-[#F3EEFA] rounded-full overflow-hidden border border-[#E9E4F5] relative shadow-inner">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
