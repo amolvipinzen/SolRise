@@ -13,7 +13,8 @@ import {
   limit, 
   updateDoc, 
   setDoc, 
-  deleteDoc 
+  deleteDoc,
+  writeBatch 
 } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import { UserProfile, Circle, Task, TaskLog } from './types';
@@ -462,6 +463,29 @@ export default function App() {
     }
   };
 
+  // Reorder tasks in Firestore (Atomic Write Batch)
+  const handleReorderTasks = async (reorderedTasks: Task[]) => {
+    if (!userProfile?.circleId) return;
+    try {
+      const batch = writeBatch(db);
+      let hasUpdates = false;
+
+      reorderedTasks.forEach((task, index) => {
+        if (task.order !== index) {
+          const taskDocRef = doc(db, 'circles', userProfile.circleId!, 'tasks', task.id);
+          batch.update(taskDocRef, { order: index });
+          hasUpdates = true;
+        }
+      });
+
+      if (hasUpdates) {
+        await batch.commit();
+      }
+    } catch (err) {
+      console.error("Error saving task order:", err);
+    }
+  };
+
   // Show loading spinner
   if (loading) {
     return (
@@ -706,6 +730,7 @@ export default function App() {
                 setEditingTask(task);
                 setIsTaskModalOpen(true);
               }}
+              onReorderTasks={handleReorderTasks}
             />
           </div>
 

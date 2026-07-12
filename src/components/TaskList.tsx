@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Task, UserProfile, TaskCategory, TaskFrequency } from '../types';
 import {
   Trash2,
@@ -18,7 +18,13 @@ import lavenderImg from '../lavender.png';
 
 // Deluxe iOS-style single botanical lavender sprig component using the custom asset image
 export const LavenderSprig = ({ className = "w-12 h-12" }: { className?: string }) => (
-  <img src={lavenderImg} alt="Lavender Sprig" className={`${className} object-contain`} />
+  <div className={`${className} relative overflow-hidden shrink-0`}>
+    <img 
+      src={lavenderImg} 
+      alt="Lavender Sprig" 
+      className="absolute max-w-none h-full w-[170%] left-[-62%] top-0 object-contain" 
+    />
+  </div>
 );
 // soundEffects utility is imported and used below
 
@@ -66,6 +72,7 @@ interface TaskListProps {
   onDeleteTask: (taskId: string) => void;
   onCreateTaskClick?: () => void;
   onEditTaskClick?: (task: Task) => void;
+  onReorderTasks?: (reorderedTasks: Task[]) => void;
 }
 
 export default function TaskList({
@@ -75,13 +82,24 @@ export default function TaskList({
   onToggleComplete,
   onDeleteTask,
   onCreateTaskClick,
-  onEditTaskClick
+  onEditTaskClick,
+  onReorderTasks
 }: TaskListProps) {
   const [statusFilter, setStatusFilter] = useState<'All' | 'Completed' | 'Pending'>('All');
   const [filterFrequency, setFilterFrequency] = useState<TaskFrequency | 'All'>('Daily');
   const [selectedMood, setSelectedMood] = useState<string | null>(() => {
     return localStorage.getItem('chore_book_mood') || null;
   });
+  const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
+  const [dragOverTaskId, setDragOverTaskId] = useState<string | null>(null);
+  const [orderedTasks, setOrderedTasks] = useState<Task[]>([]);
+
+  // Synchronize orderedTasks state with database tasks when not dragging
+  useEffect(() => {
+    if (!draggedTaskId) {
+      setOrderedTasks(sortedFilteredTasks);
+    }
+  }, [tasks, filterFrequency, statusFilter, draggedTaskId]);
 
   const handleMoodSelect = (mood: string) => {
     setSelectedMood(mood);
@@ -98,6 +116,73 @@ export default function TaskList({
     return members.filter(m => assigneeIds.includes(m.uid));
   };
 
+  // Drag and Drop Event Handlers (With Cross-Browser/Firefox compatibility & Optimistic UI updates)
+  const handleDragStart = (e: React.DragEvent, taskId: string) => {
+    setDraggedTaskId(taskId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', taskId); // Required for Firefox and some Chrome versions
+  };
+
+  const handleDragOver = (e: React.DragEvent, taskId: string) => {
+    e.preventDefault();
+    if (draggedTaskId !== taskId) {
+      setDragOverTaskId(taskId);
+    }
+  };
+
+  const handleDragLeave = () => {
+    setDragOverTaskId(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedTaskId(null);
+    setDragOverTaskId(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, targetTaskId: string) => {
+    e.preventDefault();
+    if (!draggedTaskId || draggedTaskId === targetTaskId) return;
+
+    // 1. Swap locally in orderedTasks for instant, fluid UI response
+    const newOrderedTasks = [...orderedTasks];
+    const localDraggedIdx = newOrderedTasks.findIndex(t => t.id === draggedTaskId);
+    const localTargetIdx = newOrderedTasks.findIndex(t => t.id === targetTaskId);
+
+    if (localDraggedIdx !== -1 && localTargetIdx !== -1) {
+      const [draggedTask] = newOrderedTasks.splice(localDraggedIdx, 1);
+      newOrderedTasks.splice(localTargetIdx, 0, draggedTask);
+      setOrderedTasks(newOrderedTasks);
+    }
+
+    // 2. Prepare the fully updated global tasks array to commit to Firestore
+    const allSortedTasks = [...tasks].sort((a, b) => {
+      const orderA = a.order !== undefined && a.order !== null ? a.order : -1;
+      const orderB = b.order !== undefined && b.order !== null ? b.order : -1;
+      if (orderA !== orderB) return orderA - orderB;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+
+    const globalDraggedIdx = allSortedTasks.findIndex(t => t.id === draggedTaskId);
+    const globalTargetIdx = allSortedTasks.findIndex(t => t.id === targetTaskId);
+
+    if (globalDraggedIdx !== -1 && globalTargetIdx !== -1) {
+      const [draggedTask] = allSortedTasks.splice(globalDraggedIdx, 1);
+      allSortedTasks.splice(globalTargetIdx, 0, draggedTask);
+
+      const updatedTasks = allSortedTasks.map((t, idx) => ({
+        ...t,
+        order: idx
+      }));
+
+      if (onReorderTasks) {
+        onReorderTasks(updatedTasks);
+      }
+    }
+
+    setDraggedTaskId(null);
+    setDragOverTaskId(null);
+  };
+
   // Filter tasks based on selected filter options
   const filteredTasks = tasks.filter((task) => {
     const frequencyMatch = filterFrequency === 'All' || (task.frequency as string) === (filterFrequency as string);
@@ -105,6 +190,16 @@ export default function TaskList({
       (statusFilter === 'Completed' && task.status === 'Completed') ||
       (statusFilter === 'Pending' && task.status === 'Pending');
     return frequencyMatch && statusMatch;
+  });
+
+  // Sort tasks in-memory by order asc, falling back to createdAt desc
+  const sortedFilteredTasks = [...filteredTasks].sort((a, b) => {
+    const orderA = a.order !== undefined && a.order !== null ? a.order : -1;
+    const orderB = b.order !== undefined && b.order !== null ? b.order : -1;
+    if (orderA !== orderB) {
+      return orderA - orderB;
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
   // Calculate completion percentage
@@ -299,12 +394,20 @@ export default function TaskList({
                   <div className="relative flex items-center gap-1">
 
                     {/* Lavender sprig — positioned absolutely to the left of the centered title */}
-                    <div className="absolute right-[calc(100%+12px)] top-1/2 -translate-y-1/2 select-none pointer-events-none shrink-0">
+                    <div className="absolute right-[calc(100%+4px)] top-1/2 -translate-y-1/2 select-none pointer-events-none shrink-0">
                       <LavenderSprig className="w-[42px] h-[56px] sm:w-[54px] sm:h-[72px]" />
                     </div>
 
                     <h3 className="font-caveat text-4xl sm:text-[50px] font-bold text-[#533FA2] tracking-wide whitespace-nowrap leading-none">
-                      Daily Chores
+                      {filterFrequency === 'Weekly' 
+                        ? 'Weekly Chores' 
+                        : filterFrequency === 'Daily' 
+                        ? 'Daily Chores' 
+                        : filterFrequency === 'Monthly' 
+                        ? 'Monthly Chores' 
+                        : filterFrequency === 'One-time' 
+                        ? 'One-Time Chores' 
+                        : 'All Chores'}
                     </h3>
                     <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 sm:w-8 sm:h-8 shrink-0 select-none pointer-events-none">
                       <path d="M 20 5 C 20 15, 15 20, 5 20 C 15 20, 20 25, 20 35 C 20 25, 25 20, 35 20 C 25 20, 20 15, 20 5 Z" fill="#B39DFA" />
@@ -357,17 +460,29 @@ export default function TaskList({
                 </div>
               ) : (
                 <div className="relative z-10 space-y-3 pb-6 mt-6">
-                  {filteredTasks.map((task) => {
+                  {orderedTasks.map((task) => {
                     const assignees = getAssigneeProfiles(task.assignedTo);
                     const isCompleted = task.status === 'Completed';
 
                     return (
                       <div
                         key={task.id}
-                        className="bg-white rounded-[20px] sm:rounded-[24px] p-2.5 sm:p-5 border border-[#F0EBF9] shadow-xs hover:shadow-md transition-all relative flex gap-2.5 sm:gap-4 group overflow-hidden"
+                        draggable={true}
+                        onDragStart={(e) => handleDragStart(e, task.id)}
+                        onDragEnd={handleDragEnd}
+                        onDragOver={(e) => handleDragOver(e, task.id)}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, task.id)}
+                        className={`bg-white rounded-[20px] sm:rounded-[24px] p-2.5 sm:p-5 border transition-all relative flex gap-2.5 sm:gap-4 group overflow-hidden select-none cursor-grab active:cursor-grabbing ${
+                          draggedTaskId === task.id 
+                            ? 'opacity-40 border-dashed border-[#BFAEF8] scale-[0.98]' 
+                            : dragOverTaskId === task.id
+                            ? 'border-[#9D82F2] ring-2 ring-[#9D82F2]/30 scale-[1.01]'
+                            : 'border-[#F0EBF9] hover:shadow-md shadow-xs'
+                        }`}
                       >
                         {/* Left column: Checkbox */}
-                        <div className="flex flex-col items-center shrink-0 pt-0.5">
+                        <div className="flex flex-col items-center shrink-0 pt-0.5" draggable={false}>
                           {isCompleted ? (
                             <button
                               onClick={() => onToggleComplete(task)}
@@ -441,7 +556,7 @@ export default function TaskList({
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-0.5 text-[#A699C7]">
+                            <div className="flex items-center gap-0.5 text-[#A699C7]" draggable={false}>
                               {onEditTaskClick && (
                                 <button
                                   onClick={() => onEditTaskClick(task)}
