@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Patrick+Hand&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-hand: "Patrick Hand", "Caveat", cursive, sans-serif;
+  --font-caveat: "Caveat", cursive, sans-serif;
+}
+
+/* Custom handwritten, doodle-like styles */
+.paper-card {
+  background-color: #ffffff;
+  border: 1px solid #e9d5ff;
+  box-shadow: 4px 4px 0px 0px rgba(168, 85, 247, 0.2);
+  border-radius: 20px;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+.paper-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 6px 6px 0px 0px rgba(168, 85, 247, 0.25);
+}
+
+.custom-shadow {
+  box-shadow: 4px 4px 0px rgba(168, 85, 247, 0.2);
+}
+
+.paper-texture {
+  background-image: radial-gradient(#d8b4fe 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+}
+
+.torn-edge {
+  border-bottom: 2px dashed #D8B4FE;
+}
+
+.doodle-border-dashed {
+  border: 2px dashed #b19ff5;
+}
+
+/* Hand-drawn underline */
+.hand-underline {
+  position: relative;
+}
+
+.hand-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 4px;
+  background-color: #d1c4e9;
+  border-radius: 32% 68% 51% 49% / 54% 39% 61% 46%;
+}
+
+/* Notebook lined paper look */
+.lined-paper {
+  background: linear-gradient(#faf8ff 95%, #e1d8f5 95%);
+  background-size: 100% 2rem;
+  line-height: 2rem;
+}
+
+.ruled-notebook {
+  background-color: #fffef9;
+  background-image: 
+    /* Crisp horizontal rule lines resembling standard notebook sheets */
+    repeating-linear-gradient(
+      transparent,
+      transparent 35px,
+      rgba(147, 197, 253, 0.35) 35px,
+      rgba(147, 197, 253, 0.35) 36px
+    );
+  background-size: 100% 36px;
+}
+
+/* Sticky note style */
+.sticky-note {
+  background-color: #f3efff;
+  border-left: 5px solid #a78bfa;
+  box-shadow: 2px 2px 5px rgba(124, 58, 237, 0.08);
+}
+
+/* Cute handwritten checklist animations */
+input[type="checkbox"]:checked + span {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Soft hand-drawn star rating effect */
+@keyframes star-grow {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3) rotate(15deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.animate-star {
+  animation: star-grow 0.3s ease-out;
+}

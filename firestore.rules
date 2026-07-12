@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: is the user logged in?
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Users Collection rules
+    match /users/{userId} {
+      // Anyone logged in can read other users (to see family member stats in the circle)
+      allow read: if isSignedIn();
+      // Only the user themselves can write or update their profile
+      allow create, update: if isSignedIn() && request.auth.uid == userId;
+      allow delete: if false; // Profiles shouldn't be deleted easily
+    }
+
+    // Circles Collection rules
+    match /circles/{circleId} {
+      // Anyone logged in can read, create, or update a circle
+      allow read, create, update: if isSignedIn();
+      allow delete: if false;
+
+      // Subcollection: Tasks
+      match /tasks/{taskId} {
+        // Any signed-in member can read, create, update, or delete tasks in the family circle
+        allow read, write: if isSignedIn();
+      }
+
+      // Subcollection: Logs
+      match /logs/{logId} {
+        // Any signed-in member can read or create logs
+        allow read, create: if isSignedIn();
+        // Logs are historical audit records and shouldn't be edited or deleted
+        allow update, delete: if false;
+      }
+    }
+  }
+}

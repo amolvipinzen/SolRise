@@ -1,0 +1,18 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+
+# Environment variables — never commit real keys
+.env
+.env.local
+.env.*.local
+
+# Firebase config with real API keys — use env vars instead
+firebase-applet-config.json
+metadata.json
+
+# Firebase emulator data
+.firebase/

@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Information about a user, including their name, avatar, gamification status, and circle memberships.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique Firebase Authentication UID of the user." },
+        "displayName": { "type": "string", "description": "The display name chosen by the user." },
+        "email": { "type": "string", "description": "The email address of the user." },
+        "avatarUrl": { "type": "string", "description": "Optional URL to the user's selected avatar." },
+        "avatarEmoji": { "type": "string", "description": "The emoji selected as avatar." },
+        "role": { "type": "string", "description": "The role in the family, e.g., Parent, Child, Grandparent.", "enum": ["Parent", "Child", "Grandparent", "Other"] },
+        "circleId": { "type": "string", "description": "The ID of the Family Circle this user belongs to, if any." },
+        "xp": { "type": "number", "description": "The user's experience points for completing chores." },
+        "level": { "type": "number", "description": "The current gamified level of the user." },
+        "pushToken": { "type": "string", "description": "The device push notification ID / registration token for simulations." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the profile was created." }
+      },
+      "required": ["uid", "displayName", "email", "xp", "level"]
+    },
+    "Circle": {
+      "title": "Family Circle",
+      "description": "A family circle representing a group of people who share chores and routines.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique ID of the Circle." },
+        "name": { "type": "string", "description": "The name of the family circle." },
+        "code": { "type": "string", "description": "The invite code (e.g. FAM-123456) for joining." },
+        "createdById": { "type": "string", "description": "The UID of the user who created this circle." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the circle was created." }
+      },
+      "required": ["id", "name", "code", "createdById"]
+    },
+    "Task": {
+      "title": "Family Task",
+      "description": "A chore, routine, exercise, or goal assigned to users within a circle.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique ID of the task." },
+        "title": { "type": "string", "description": "Title of the task or chore." },
+        "description": { "type": "string", "description": "Description of what needs to be done." },
+        "category": { "type": "string", "description": "Chore, Daily Routine, Exercise, or Goal.", "enum": ["Chore", "Routine", "Exercise", "Goal"] },
+        "frequency": { "type": "string", "description": "Daily, Weekly, or Monthly.", "enum": ["Daily", "Weekly", "Monthly", "One-time"] },
+        "assignedTo": { "type": "array", "description": "List of user UIDs assigned to this task." },
+        "timeOfDay": { "type": "string", "description": "Optional deadline time, e.g. '18:00' or '09:00'." },
+        "deadlineDate": { "type": "string", "description": "Optional specific due date (for monthly or goals)." },
+        "xpReward": { "type": "number", "description": "XP rewarded upon completion." },
+        "difficulty": { "type": "string", "description": "Easy, Medium, Hard.", "enum": ["Easy", "Medium", "Hard"] },
+        "status": { "type": "string", "description": "Current state.", "enum": ["Pending", "Completed"] },
+        "lastCompletedAt": { "type": "string", "format": "date-time", "description": "When it was last completed." },
+        "lastCompletedBy": { "type": "string", "description": "UID of the user who last completed it." },
+        "streak": { "type": "number", "description": "Current completion streak for recurring tasks." },
+        "createdById": { "type": "string", "description": "Who created the task." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the task was created." }
+      },
+      "required": ["id", "title", "category", "frequency", "xpReward", "status"]
+    },
+    "TaskLog": {
+      "title": "Task Completion Log",
+      "description": "Historical record of task completions inside a circle, used for points, statistics, and feed.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique ID of the log." },
+        "taskId": { "type": "string", "description": "The ID of the completed task." },
+        "taskTitle": { "type": "string", "description": "Snapshot of the task's title." },
+        "taskCategory": { "type": "string", "description": "Snapshot of the category." },
+        "completedBy": { "type": "string", "description": "UID of the completing user." },
+        "completedByName": { "type": "string", "description": "Name of the completing user." },
+        "completedByEmoji": { "type": "string", "description": "Avatar emoji of the completing user." },
+        "xpAwarded": { "type": "number", "description": "The XP awarded to the user." },
+        "completedAt": { "type": "string", "format": "date-time", "description": "When it was completed." }
+      },
+      "required": ["id", "taskId", "taskTitle", "completedBy", "completedByName", "xpAwarded", "completedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profile collection holding gamification state and settings."
+    },
+    "/circles/{circleId}": {
+      "schema": { "$ref": "#/entities/Circle" },
+      "description": "Circles collection representing different family units."
+    },
+    "/circles/{circleId}/tasks/{taskId}": {
+      "schema": { "$ref": "#/entities/Task" },
+      "description": "Tasks associated with a particular family circle."
+    },
+    "/circles/{circleId}/logs/{logId}": {
+      "schema": { "$ref": "#/entities/TaskLog" },
+      "description": "Audit trail of task completions within a family circle for ledger and feed."
+    }
+  }
+}
