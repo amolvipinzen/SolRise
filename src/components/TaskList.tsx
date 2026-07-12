@@ -879,7 +879,7 @@ export default function TaskList({
                   {[
                     { key: 'All', label: 'All', icon: <LayoutGrid className="w-3.5 h-3.5" fill="currentColor" /> },
                     { key: 'Completed', label: 'Completed', icon: <CheckCircle className="w-3.5 h-3.5" /> },
-                    { key: 'Pending', label: 'Not Completed', icon: <Circle className="w-3.5 h-3.5" strokeDasharray="3 3" /> },
+                    { key: 'Pending', label: 'In Progress', icon: <Circle className="w-3.5 h-3.5" strokeDasharray="3 3" /> },
                   ].map((tab) => {
                     const isActive = statusFilter === tab.key;
                     return (
