@@ -3,6 +3,7 @@ export interface UserProfile {
   displayName: string;
   email: string;
   avatarEmoji: string;
+  avatarUrl?: string;
   role: 'Parent' | 'Child' | 'Grandparent' | 'Other';
   circleId: string | null;
   xp: number;

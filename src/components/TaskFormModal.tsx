@@ -324,7 +324,13 @@ export default function TaskFormModal({ familyMembers, onClose, onSave, taskToEd
                         : 'bg-white border-purple-100 text-purple-600 hover:border-purple-200'
                     }`}
                   >
-                    <span>{member.avatarEmoji}</span>
+                    <span className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center bg-purple-100 shrink-0">
+                      {member.avatarUrl ? (
+                        <img src={member.avatarUrl} alt={member.displayName} className="w-full h-full object-cover select-none" />
+                      ) : (
+                        <span className="select-none text-xs">{member.avatarEmoji}</span>
+                      )}
+                    </span>
                     <span>{member.displayName}</span>
                     <span className="text-[10px] text-purple-400 font-normal">({member.role})</span>
                   </button>

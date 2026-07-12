@@ -566,10 +566,14 @@ export default function TaskList({
                                 {assignees.map((member) => (
                                   <div
                                     key={member.uid}
-                                    className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#F0EBFC] border-2 border-white flex items-center justify-center text-[10px] sm:text-xs shadow-xs"
+                                    className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#F0EBFC] border-2 border-white flex items-center justify-center text-[10px] sm:text-xs shadow-xs overflow-hidden"
                                     title={member.displayName}
                                   >
-                                    {member.avatarEmoji}
+                                    {member.avatarUrl ? (
+                                      <img src={member.avatarUrl} alt={member.displayName} className="w-full h-full object-cover select-none" />
+                                    ) : (
+                                      <span className="select-none">{member.avatarEmoji}</span>
+                                    )}
                                   </div>
                                 ))}
                               </div>

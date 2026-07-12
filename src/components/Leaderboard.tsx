@@ -73,7 +73,13 @@ export default function Leaderboard({ members }: LeaderboardProps) {
                   {rankIcon ? rankIcon : index + 1}
                 </div>
                 
-                <span className="text-3xl filter drop-shadow-sm">{member.avatarEmoji}</span>
+                <div className="w-10 h-10 rounded-full bg-purple-100 border border-purple-200 flex items-center justify-center overflow-hidden shrink-0 shadow-xs">
+                  {member.avatarUrl ? (
+                    <img src={member.avatarUrl} alt={member.displayName} className="w-full h-full object-cover select-none" />
+                  ) : (
+                    <span className="text-2xl filter drop-shadow-sm select-none">{member.avatarEmoji}</span>
+                  )}
+                </div>
                 
                 <div>
                   <div className="flex items-center gap-1.5">

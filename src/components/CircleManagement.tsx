@@ -215,7 +215,12 @@ export default function CircleManagement({ userProfile, onCircleJoined, onLogout
         {/* Header */}
         <div className="text-center">
           <h2 className="font-caveat text-4xl font-bold text-purple-900">
-            Welcome, {userProfile.displayName}! {userProfile.avatarEmoji}
+            Welcome, {userProfile.displayName}!{' '}
+            {userProfile.avatarUrl ? (
+              <img src={userProfile.avatarUrl} alt="avatar" className="w-9 h-9 rounded-full inline-block object-cover ml-1.5 border border-purple-300 align-middle shadow-xs" />
+            ) : (
+              userProfile.avatarEmoji
+            )}
           </h2>
           <p className="text-sm font-medium text-purple-500 mt-1">
             To get started, create a family circle or join an existing one using an invite code.

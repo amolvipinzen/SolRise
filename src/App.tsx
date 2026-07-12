@@ -46,7 +46,8 @@ import {
   Copy,
   Check,
   ClipboardList,
-  FileText
+  FileText,
+  Camera
 } from 'lucide-react';
 
 const MOTIVATIONAL_MESSAGES = [
@@ -552,8 +553,12 @@ export default function App() {
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4 min-w-0">
               {/* Avatar Container */}
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#E8DCFC] rounded-full border border-[#D5C2F8] flex items-center justify-center shrink-0 shadow-inner text-3xl sm:text-4xl">
-                {userProfile.avatarEmoji}
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#E8DCFC] rounded-full border border-[#D5C2F8] flex items-center justify-center shrink-0 shadow-inner overflow-hidden">
+                {userProfile.avatarUrl ? (
+                  <img src={userProfile.avatarUrl} alt="avatar" className="w-full h-full object-cover select-none" />
+                ) : (
+                  <span className="text-3xl sm:text-4xl select-none">{userProfile.avatarEmoji}</span>
+                )}
               </div>
               
               {/* User Info Details */}
@@ -864,8 +869,106 @@ export default function App() {
                   </div>
                   <span className="text-[10px] font-black uppercase text-purple-400 tracking-wider">Select Your Avatar</span>
                 </div>
+                
+                {/* Custom Photo Upload Block */}
+                <div className="bg-purple-50/30 border border-purple-100 p-3 rounded-xl space-y-2">
+                  <span className="text-[10px] font-bold text-purple-700 uppercase tracking-wider block">Custom Profile Photo</span>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-purple-100 border border-purple-200 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+                      {userProfile.avatarUrl ? (
+                        <img src={userProfile.avatarUrl} alt="custom avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-2xl select-none">{userProfile.avatarEmoji}</span>
+                      )}
+                    </div>
+                    
+                    <div className="flex-1 space-y-1">
+                      <label 
+                        htmlFor="custom-photo-file"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-purple-200 hover:border-purple-300 text-[11px] font-bold text-purple-700 rounded-lg cursor-pointer transition-all shadow-2xs"
+                      >
+                        <Camera className="w-3.5 h-3.5" />
+                        <span>Upload Photo</span>
+                      </label>
+                      <input 
+                        type="file"
+                        id="custom-photo-file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          
+                          soundEffects.playChime();
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            const img = new Image();
+                            img.onload = async () => {
+                              // Canvas Resizing to 128x128 center crop to keep it lightweight for firestore
+                              const canvas = document.createElement('canvas');
+                              canvas.width = 128;
+                              canvas.height = 128;
+                              const ctx = canvas.getContext('2d');
+                              if (ctx) {
+                                // Draw image squared and cropped center
+                                const minSize = Math.min(img.width, img.height);
+                                const sx = (img.width - minSize) / 2;
+                                const sy = (img.height - minSize) / 2;
+                                ctx.drawImage(img, sx, sy, minSize, minSize, 0, 0, 128, 128);
+                                
+                                const base64Image = canvas.toDataURL('image/jpeg', 0.8);
+                                
+                                try {
+                                  // Update local state
+                                  setUserProfile({
+                                    ...userProfile,
+                                    avatarUrl: base64Image
+                                  });
+                                  // Update Firestore
+                                  await updateDoc(doc(db, 'users', userProfile.uid), {
+                                    avatarUrl: base64Image
+                                  });
+                                  triggerPushToast("📸 Custom profile photo uploaded successfully!");
+                                } catch (err) {
+                                  console.error("Failed to save profile picture:", err);
+                                }
+                              }
+                            };
+                            img.src = event.target?.result as string;
+                          };
+                          reader.readAsDataURL(file);
+                        }}
+                      />
+                      
+                      {userProfile.avatarUrl && (
+                        <button
+                          onClick={async () => {
+                            soundEffects.playChime();
+                            try {
+                              setUserProfile({
+                                ...userProfile,
+                                avatarUrl: undefined
+                              });
+                              await updateDoc(doc(db, 'users', userProfile.uid), {
+                                avatarUrl: null // clear in Firestore
+                              });
+                              triggerPushToast("🗑️ Custom profile photo cleared.");
+                            } catch (err) {
+                              console.error("Failed to clear profile picture:", err);
+                            }
+                          }}
+                          className="block text-[10px] font-bold text-red-500 hover:text-red-600 transition-colors"
+                        >
+                          Clear custom photo
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
                 <p className="text-xs text-slate-500 leading-normal">
-                  Choose an emoji to change your avatar across the family chore book & leaderboard!
+                  Or pick an emoji to change your avatar across the family chore book & leaderboard!
                 </p>
                 <div className="grid grid-cols-6 gap-2 p-2 bg-purple-50/50 rounded-xl border-2 border-dashed border-purple-200">
                   {['🦊', '🦁', '🐯', '🐨', '🐼', '🐻', '🐱', '🐶', '🐰', '🦄', '🐺', '🐸', '🐵', '🐧', '🐥', '🦉'].map((emoji) => (
@@ -875,21 +978,23 @@ export default function App() {
                         if (!userProfile) return;
                         soundEffects.playChime();
                         try {
-                          // Update local state
+                          // Clear custom image url when selecting an emoji
                           setUserProfile({
                             ...userProfile,
-                            avatarEmoji: emoji
+                            avatarEmoji: emoji,
+                            avatarUrl: undefined
                           });
                           // Update firestore
                           await updateDoc(doc(db, 'users', userProfile.uid), {
-                            avatarEmoji: emoji
+                            avatarEmoji: emoji,
+                            avatarUrl: null
                           });
                         } catch (err) {
                           console.error("Failed to update avatar:", err);
                         }
                       }}
                       className={`text-2xl p-1 rounded-lg hover:bg-purple-100 transition-all transform hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center ${
-                        userProfile.avatarEmoji === emoji ? 'bg-purple-200 border border-purple-400 scale-105 shadow-xs' : 'bg-transparent'
+                        !userProfile.avatarUrl && userProfile.avatarEmoji === emoji ? 'bg-purple-200 border border-purple-400 scale-105 shadow-xs' : 'bg-transparent'
                       }`}
                       title="Set as profile avatar"
                     >
@@ -911,7 +1016,13 @@ export default function App() {
                   <div className="max-h-[350px] overflow-y-auto space-y-2 pr-1 divide-y divide-purple-50">
                     {members.map((m) => (
                       <div key={m.uid} className="flex items-center gap-3 py-2 px-2.5 rounded-xl hover:bg-purple-50/40 transition-colors first:pt-2">
-                        <span className="text-2xl filter drop-shadow-sm shrink-0">{m.avatarEmoji}</span>
+                        <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden shrink-0 shadow-xs border border-purple-200">
+                          {m.avatarUrl ? (
+                            <img src={m.avatarUrl} alt={m.displayName} className="w-full h-full object-cover select-none" />
+                          ) : (
+                            <span className="text-xl select-none">{m.avatarEmoji}</span>
+                          )}
+                        </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-bold text-purple-900 truncate">{m.displayName}</div>
                           <div className="text-xs text-purple-500 font-medium">Level {m.level} • {m.xp} XP</div>
