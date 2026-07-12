@@ -720,7 +720,7 @@ export default function TaskList({
       <div className="bg-white rounded-[24px] p-4 sm:p-5 border border-[#E9E4F5] shadow-xs flex items-center justify-between gap-2.5 sm:gap-4">
         
         {/* Left: Dynamic Blooming plant */}
-        <div className="w-12 h-[60px] sm:w-14 sm:h-[70px] flex items-center justify-center shrink-0 translate-y-1 sm:translate-y-1.5">
+        <div className="w-16 h-20 sm:w-20 sm:h-[100px] flex items-center justify-center shrink-0 translate-y-0.5 sm:translate-y-1">
           <LavenderBloom progress={completionPercent} className="w-full h-full" />
         </div>
 
