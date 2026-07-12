@@ -746,7 +746,21 @@ export default function App() {
             
             {/* Leaderboard segment */}
             <div className={`${activeTab !== 'leaderboard' ? 'hidden md:block' : ''}`}>
-              <Leaderboard members={members} />
+              <Leaderboard 
+                members={members} 
+                currentUserId={userProfile.uid} 
+                logs={logs}
+                onTabChange={(tab) => {
+                  setActiveTab(tab);
+                  setIsMenuOpen(false);
+                }}
+                onAddTaskClick={() => {
+                  setIsTaskModalOpen(true);
+                }}
+                onProfileClick={() => {
+                  setIsMenuOpen(true);
+                }}
+              />
             </div>
 
             {/* Live Feed ledger log */}

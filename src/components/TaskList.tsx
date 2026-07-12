@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Task, UserProfile, TaskCategory, TaskFrequency } from '../types';
 import {
   Trash2,
@@ -15,6 +15,7 @@ import {
   Circle
 } from 'lucide-react';
 import lavenderImg from '../lavender.png';
+import { soundEffects } from '../utils/audio';
 
 // Deluxe iOS-style single botanical lavender sprig component using the custom asset image
 export const LavenderSprig = ({ className = "w-12 h-12" }: { className?: string }) => (
