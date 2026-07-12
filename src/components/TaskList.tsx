@@ -14,92 +14,13 @@ import {
   LayoutGrid,
   Circle
 } from 'lucide-react';
-import { soundEffects } from '../utils/audio';
+import lavenderImg from '../lavender.png';
 
-// Deluxe iOS-style single botanical lavender sprig component with clean, defined shapes
+// Deluxe iOS-style single botanical lavender sprig component using the custom asset image
 export const LavenderSprig = ({ className = "w-12 h-12" }: { className?: string }) => (
-  <svg viewBox="0 0 100 140" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    {/* Stem: Slender muted sage green (#7FA36A) */}
-    <path d="M50 132 C50 98 50 64 50 25" stroke="#7FA36A" strokeWidth="2.2" strokeLinecap="round" />
-
-    {/* Leaves: Linear-lanceolate pairs along the base */}
-    {/* Pair 1 */}
-    <path d="M49 115 C42 113 38 107 40 101 C42 98 45 101 49 109 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
-    <path d="M51 113 C58 111 62 105 60 99 C58 96 55 99 51 107 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
-    {/* Pair 2 */}
-    <path d="M49 95 C43 93 40 88 42 82 C44 79 46 82 49 89 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
-    <path d="M51 94 C57 92 60 87 58 81 C56 78 54 81 51 88 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
-    {/* Pair 3 */}
-    <path d="M49 76 C45 74 42 70 44 65 C45 62 47 65 49 71 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
-    <path d="M51 75 C55 73 58 69 56 64 C55 61 53 64 51 70 Z" fill="#7FA36A" stroke="#567A46" strokeWidth="0.8" />
-
-    {/* Florets: 8 distinct, vertically stacked clusters (verticillasters) */}
-    {/* Cluster 1 (y=84) */}
-    <g transform="translate(50, 84)">
-      <ellipse cx="-6" cy="0" rx="2.2" ry="3.5" transform="rotate(-45)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="6" cy="0" rx="2.2" ry="3.5" transform="rotate(45)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="-3.5" cy="-3" rx="1.8" ry="3" transform="rotate(-20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="3.5" cy="-3" rx="1.8" ry="3" transform="rotate(20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="0" cy="-5" rx="1.8" ry="3" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
-    </g>
-
-    {/* Cluster 2 (y=75) */}
-    <g transform="translate(50, 75)">
-      <ellipse cx="-5.5" cy="0" rx="2.2" ry="3.5" transform="rotate(-40)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="5.5" cy="0" rx="2.2" ry="3.5" transform="rotate(40)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="-3.2" cy="-3" rx="1.8" ry="3" transform="rotate(-20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="3.2" cy="-3" rx="1.8" ry="3" transform="rotate(20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="0" cy="-5" rx="1.8" ry="3" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
-    </g>
-
-    {/* Cluster 3 (y=66) */}
-    <g transform="translate(50, 66)">
-      <ellipse cx="-5" cy="0" rx="2" ry="3.2" transform="rotate(-35)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="5" cy="0" rx="2" ry="3.2" transform="rotate(35)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="-3" cy="-2.8" rx="1.8" ry="2.8" transform="rotate(-15)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="3" cy="-2.8" rx="1.8" ry="2.8" transform="rotate(15)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="0" cy="-4.5" rx="1.8" ry="3" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
-    </g>
-
-    {/* Cluster 4 (y=57) */}
-    <g transform="translate(50, 57)">
-      <ellipse cx="-4.5" cy="0" rx="2" ry="3.2" transform="rotate(-30)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="4.5" cy="0" rx="2" ry="3.2" transform="rotate(30)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="-2.8" cy="-2.5" rx="1.6" ry="2.6" transform="rotate(-15)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="2.8" cy="-2.5" rx="1.6" ry="2.6" transform="rotate(15)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="0" cy="-4" rx="1.6" ry="2.8" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
-    </g>
-
-    {/* Cluster 5 (y=48) */}
-    <g transform="translate(50, 48)">
-      <ellipse cx="-4" cy="0" rx="1.8" ry="3" transform="rotate(-30)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="4" cy="0" rx="1.8" ry="3" transform="rotate(30)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="0" cy="-3.5" rx="1.6" ry="2.6" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="0" cy="1" rx="1.2" ry="2" fill="#D8C9FF" stroke="#5C42A5" strokeWidth="0.8" />
-    </g>
-
-    {/* Cluster 6 (y=39) */}
-    <g transform="translate(50, 39)">
-      <ellipse cx="-3.5" cy="0" rx="1.8" ry="2.8" transform="rotate(-25)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="3.5" cy="0" rx="1.8" ry="2.8" transform="rotate(25)" fill="#8B6FE8" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="0" cy="-3" rx="1.4" ry="2.4" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
-    </g>
-
-    {/* Cluster 7 (y=30) */}
-    <g transform="translate(50, 30)">
-      <ellipse cx="-2.8" cy="0" rx="1.6" ry="2.4" transform="rotate(-20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="2.8" cy="0" rx="1.6" ry="2.4" transform="rotate(20)" fill="#9E86F0" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="0" cy="-2.5" rx="1.2" ry="2" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
-    </g>
-
-    {/* Cluster 8 (y=21) */}
-    <g transform="translate(50, 21)">
-      <ellipse cx="-2" cy="0" rx="1.2" ry="2" transform="rotate(-15)" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="2" cy="0" rx="1.2" ry="2" transform="rotate(15)" fill="#B59BFF" stroke="#5C42A5" strokeWidth="0.8" />
-      <ellipse cx="0" cy="-2" rx="1" ry="1.6" fill="#D8C9FF" stroke="#5C42A5" strokeWidth="0.8" />
-    </g>
-  </svg>
+  <img src={lavenderImg} alt="Lavender Sprig" className={`${className} object-contain`} />
 );
+// soundEffects utility is imported and used below
 
 // Potted lavender floral graphic matching the completed task icon
 const LavenderPot = ({ className = "w-16 h-16" }: { className?: string }) => (
@@ -378,8 +299,8 @@ export default function TaskList({
                   <div className="relative flex items-center gap-1">
 
                     {/* Lavender sprig — positioned absolutely to the left of the centered title */}
-                    <div className="absolute right-[calc(100%+14px)] top-1/2 -translate-y-1/2 select-none pointer-events-none shrink-0">
-                      <LavenderSprig className="w-[48px] h-[64px] sm:w-[62px] sm:h-[84px] transform rotate-12" />
+                    <div className="absolute right-[calc(100%+12px)] top-1/2 -translate-y-1/2 select-none pointer-events-none shrink-0">
+                      <LavenderSprig className="w-[42px] h-[56px] sm:w-[54px] sm:h-[72px]" />
                     </div>
 
                     <h3 className="font-caveat text-4xl sm:text-[50px] font-bold text-[#533FA2] tracking-wide whitespace-nowrap leading-none">
