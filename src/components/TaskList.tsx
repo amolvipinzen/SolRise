@@ -486,15 +486,6 @@ export default function TaskList({
                               <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-[#F6C644] text-[#C19519]" />
                               <span>+{task.xpReward} XP</span>
                             </span>
-
-                            {isCompleted && (
-                              <>
-                                <span className="text-[#E1D8F5] text-[10px] sm:text-xs">|</span>
-                                <span className="bg-[#F0EBFC] text-[#7A63D4] font-bold text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-[6px] sm:rounded-[8px] tracking-wide shrink-0">
-                                  Completed
-                                </span>
-                              </>
-                            )}
                           </div>
 
                           {/* Bottom footer row containing assignee details & edit actions */}
