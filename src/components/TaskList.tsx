@@ -508,7 +508,7 @@ export default function TaskList({
   onEditTaskClick,
   onReorderTasks
 }: TaskListProps) {
-  const [statusFilter, setStatusFilter] = useState<'All' | 'Completed' | 'Pending'>('All');
+  const [statusFilter, setStatusFilter] = useState<'All' | 'Completed' | 'Pending'>('Pending');
   const [filterFrequency, setFilterFrequency] = useState<TaskFrequency | 'All'>('Daily');
   const [selectedMood, setSelectedMood] = useState<string | null>(() => {
     return localStorage.getItem('chore_book_mood') || null;
@@ -875,18 +875,18 @@ export default function TaskList({
                 </p>
 
                 {/* Status Filter Bar */}
-                <div className="w-full bg-[#FAF8FF] border border-[#EBE5F7] rounded-full p-1 flex items-center justify-between gap-1 mt-5 pointer-events-auto">
+                <div className="w-full bg-[#FAF8FF] border border-[#EBE5F7] rounded-full p-1 flex items-center justify-around mt-5 pointer-events-auto">
                   {[
-                    { key: 'All', label: 'All', icon: <LayoutGrid className="w-3.5 h-3.5" fill="currentColor" /> },
-                    { key: 'Completed', label: 'Completed', icon: <CheckCircle className="w-3.5 h-3.5" /> },
                     { key: 'Pending', label: 'In Progress', icon: <Circle className="w-3.5 h-3.5" strokeDasharray="3 3" /> },
+                    { key: 'Completed', label: 'Completed', icon: <CheckCircle className="w-3.5 h-3.5" /> },
+                    { key: 'All', label: 'All', icon: <LayoutGrid className="w-3.5 h-3.5" fill="currentColor" /> },
                   ].map((tab) => {
                     const isActive = statusFilter === tab.key;
                     return (
                       <button
                         key={tab.key}
                         onClick={() => setStatusFilter(tab.key as 'All' | 'Completed' | 'Pending')}
-                        className={`flex-1 py-2 px-1 sm:px-3 rounded-full text-[10px] sm:text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap text-[#5C42A5] ${
+                        className={`py-2 px-3.5 sm:px-6 rounded-full text-[10px] sm:text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap text-[#5C42A5] ${
                           isActive
                             ? 'bg-[#E5DCFC] shadow-xs'
                             : 'hover:bg-[#F3EEFA]/50'
