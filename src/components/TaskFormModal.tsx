@@ -126,7 +126,7 @@ export default function TaskFormModal({ familyMembers, onClose, onSave, taskToEd
                 onChange={(e) => setCategory(e.target.value as TaskCategory)}
               >
                 <option value="Chore">🧹 Chore</option>
-                <option value="Routine">🔄 Routine</option>
+                <option value="Routine">🌱 Routine</option>
                 <option value="Exercise">🏃‍♂️ Exercise</option>
                 <option value="Goal">🎯 Goal</option>
               </select>

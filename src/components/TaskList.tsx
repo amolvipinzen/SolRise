@@ -504,7 +504,7 @@ export default function TaskList({
                           <div className="flex items-start gap-1.5 sm:gap-2">
                             <span className="text-sm sm:text-lg select-none shrink-0 mt-0.5">
                               {task.category === 'Chore' && '🧹'}
-                              {task.category === 'Routine' && '🔄'}
+                              {task.category === 'Routine' && '🌱'}
                               {task.category === 'Exercise' && '🏃‍♂️'}
                               {task.category === 'Goal' && '🎯'}
                             </span>
