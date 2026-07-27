@@ -516,13 +516,33 @@ export default function TaskList({
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
   const [dragOverTaskId, setDragOverTaskId] = useState<string | null>(null);
   const [orderedTasks, setOrderedTasks] = useState<Task[]>([]);
+  const [recentlyCompletedIds, setRecentlyCompletedIds] = useState<string[]>([]);
+  const [fadingOutIds, setFadingOutIds] = useState<string[]>([]);
+
+  const handleToggleCompleteWithAnimation = (task: Task) => {
+    const isPending = task.status === 'Pending';
+    if (isPending && statusFilter === 'Pending') {
+      const taskId = task.id;
+      setRecentlyCompletedIds(prev => [...prev, taskId]);
+      onToggleComplete(task);
+      setTimeout(() => {
+        setFadingOutIds(prev => [...prev, taskId]);
+      }, 1400); // 1.4 seconds delay to let the slow strike-through complete
+      setTimeout(() => {
+        setRecentlyCompletedIds(prev => prev.filter(id => id !== taskId));
+        setFadingOutIds(prev => prev.filter(id => id !== taskId));
+      }, 2000); // 2.0 seconds total before unmounting
+    } else {
+      onToggleComplete(task);
+    }
+  };
 
   // Synchronize orderedTasks state with database tasks when not dragging
   useEffect(() => {
     if (!draggedTaskId) {
       setOrderedTasks(sortedFilteredTasks);
     }
-  }, [tasks, filterFrequency, statusFilter, draggedTaskId]);
+  }, [tasks, filterFrequency, statusFilter, draggedTaskId, recentlyCompletedIds]);
 
   const handleMoodSelect = (mood: string) => {
     setSelectedMood(mood);
@@ -609,9 +629,12 @@ export default function TaskList({
   // Filter tasks based on selected filter options
   const filteredTasks = tasks.filter((task) => {
     const frequencyMatch = filterFrequency === 'All' || (task.frequency as string) === (filterFrequency as string);
+    const isRecentlyCompletedInPendingTab = statusFilter === 'Pending' && 
+      task.status === 'Completed' && 
+      recentlyCompletedIds.includes(task.id);
     const statusMatch = statusFilter === 'All' || 
       (statusFilter === 'Completed' && task.status === 'Completed') ||
-      (statusFilter === 'Pending' && task.status === 'Pending');
+      (statusFilter === 'Pending' && (task.status === 'Pending' || isRecentlyCompletedInPendingTab));
     return frequencyMatch && statusMatch;
   });
 
@@ -625,9 +648,12 @@ export default function TaskList({
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
-  // Calculate completion percentage
-  const totalCount = filteredTasks.length;
-  const completedCount = filteredTasks.filter(t => t.status === 'Completed').length;
+  // Calculate completion percentage based on all tasks of this frequency (ignoring status tab)
+  const tasksForProgress = tasks.filter((task) => {
+    return filterFrequency === 'All' || (task.frequency as string) === (filterFrequency as string);
+  });
+  const totalCount = tasksForProgress.length;
+  const completedCount = tasksForProgress.filter(t => t.status === 'Completed').length;
   const completionPercent = totalCount > 0 ? Math.floor((completedCount / totalCount) * 100) : 0;
 
   return (
@@ -875,7 +901,7 @@ export default function TaskList({
                 </p>
 
                 {/* Status Filter Bar */}
-                <div className="w-full bg-[#FAF8FF] border border-[#EBE5F7] rounded-full p-1 flex items-center justify-around mt-5 pointer-events-auto">
+                <div className="w-full bg-[#FAF8FF] border border-[#EBE5F7] rounded-full p-1 grid grid-cols-3 gap-1 mt-5 pointer-events-auto">
                   {[
                     { key: 'Pending', label: 'In Progress', icon: <Circle className="w-3.5 h-3.5" strokeDasharray="3 3" /> },
                     { key: 'Completed', label: 'Completed', icon: <CheckCircle className="w-3.5 h-3.5" /> },
@@ -886,7 +912,7 @@ export default function TaskList({
                       <button
                         key={tab.key}
                         onClick={() => setStatusFilter(tab.key as 'All' | 'Completed' | 'Pending')}
-                        className={`py-2 px-3.5 sm:px-6 rounded-full text-[10px] sm:text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap text-[#5C42A5] ${
+                        className={`w-full py-2 px-1.5 sm:px-3 rounded-full text-[10px] sm:text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap text-[#5C42A5] ${
                           isActive
                             ? 'bg-[#E5DCFC] shadow-xs'
                             : 'hover:bg-[#F3EEFA]/50'
@@ -926,7 +952,9 @@ export default function TaskList({
                         onDragLeave={handleDragLeave}
                         onDrop={(e) => handleDrop(e, task.id)}
                         className={`bg-white rounded-[20px] sm:rounded-[24px] p-2.5 sm:p-5 border transition-all relative flex gap-2.5 sm:gap-4 group overflow-hidden select-none cursor-grab active:cursor-grabbing ${
-                          draggedTaskId === task.id 
+                          fadingOutIds.includes(task.id)
+                            ? 'opacity-0 scale-95 -translate-y-2 pointer-events-none duration-600 ease-in-out'
+                            : draggedTaskId === task.id 
                             ? 'opacity-40 border-dashed border-[#BFAEF8] scale-[0.98]' 
                             : dragOverTaskId === task.id
                             ? 'border-[#9D82F2] ring-2 ring-[#9D82F2]/30 scale-[1.01]'
@@ -937,14 +965,14 @@ export default function TaskList({
                         <div className={`flex flex-col items-center shrink-0 pt-0.5 ${draggedTaskId ? 'pointer-events-none' : ''}`} draggable={false}>
                           {isCompleted ? (
                             <button
-                              onClick={() => onToggleComplete(task)}
+                              onClick={() => handleToggleCompleteWithAnimation(task)}
                               className="w-5 h-5 sm:w-6 sm:h-6 rounded-[6px] sm:rounded-[8px] bg-[#9D82F2] border border-[#9D82F2] flex items-center justify-center text-white cursor-pointer hover:bg-purple-600 transition-colors shrink-0"
                             >
                               <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
                             </button>
                           ) : (
                             <button
-                              onClick={() => onToggleComplete(task)}
+                              onClick={() => handleToggleCompleteWithAnimation(task)}
                               className="w-5 h-5 sm:w-6 sm:h-6 rounded-[6px] sm:rounded-[8px] border-2 border-[#E0D9F0] hover:border-purple-400 bg-white transition-all cursor-pointer shrink-0"
                             />
                           )}
@@ -960,16 +988,32 @@ export default function TaskList({
                               {task.category === 'Exercise' && '🏃‍♂️'}
                               {task.category === 'Goal' && '🎯'}
                             </span>
-                            <h4 className={`font-sans font-bold text-xs sm:text-base text-[#3B2961] tracking-wide leading-snug transition-all ${isCompleted ? 'line-through text-slate-400 opacity-70' : ''
-                              }`}>
+                            <h4 
+                              className="font-sans font-bold text-xs sm:text-base text-[#3B2961] tracking-wide leading-snug transition-all"
+                              style={{
+                                background: 'linear-gradient(to right, currentColor, currentColor) no-repeat left 50%',
+                                backgroundSize: isCompleted ? '100% 2px' : '0% 2px',
+                                color: isCompleted ? '#94a3b8' : '#3B2961',
+                                opacity: isCompleted ? 0.7 : 1,
+                                transition: 'background-size 1.2s ease-out, color 1.2s ease-out, opacity 1.2s ease-out'
+                              }}
+                            >
                               {task.title}
                             </h4>
                           </div>
 
                           {/* Description */}
                           {task.description && (
-                            <p className={`text-[11px] sm:text-[13px] text-[#7E7399] font-medium leading-relaxed pl-1 ${isCompleted ? 'line-through text-slate-400/60' : ''
-                              }`}>
+                            <p 
+                              className="text-[11px] sm:text-[13px] text-[#7E7399] font-medium leading-relaxed pl-1 transition-all"
+                              style={{
+                                background: 'linear-gradient(to right, currentColor, currentColor) no-repeat left 50%',
+                                backgroundSize: isCompleted ? '100% 1px' : '0% 1px',
+                                color: isCompleted ? '#94a3b8' : '#7E7399',
+                                opacity: isCompleted ? 0.6 : 1,
+                                transition: 'background-size 1.2s ease-out, color 1.2s ease-out, opacity 1.2s ease-out'
+                              }}
+                            >
                               {task.description}
                             </p>
                           )}
