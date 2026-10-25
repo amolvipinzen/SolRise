@@ -1,135 +1,171 @@
-// A web-audio synthesizer helper to play nostalgic, 8-bit gamified sounds without loading heavy assets.
+// A tiny Web Audio synthesizer for soft, warm feedback sounds without loading audio assets.
+const MUTE_KEY = 'solrise_muted';
+
 class SoundEffects {
   private ctx: AudioContext | null = null;
+  private muted = false;
+
+  constructor() {
+    try {
+      this.muted = localStorage.getItem(MUTE_KEY) === '1';
+    } catch {
+      // storage blocked
+    }
+  }
+
+  isMuted() {
+    return this.muted;
+  }
+
+  setMuted(muted: boolean) {
+    this.muted = muted;
+    try {
+      localStorage.setItem(MUTE_KEY, muted ? '1' : '0');
+    } catch {
+      // storage blocked
+    }
+  }
 
   private init() {
+    if (this.muted) return null;
     if (!this.ctx) {
-      // Create audio context on user interaction
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      if (AudioCtx) {
-        this.ctx = new AudioCtx();
-      }
+      if (AudioCtx) this.ctx = new AudioCtx();
     }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
+    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+    return this.ctx;
   }
 
-  // Play a simple coin/chime sound (task completion)
-  playChime() {
-    this.init();
-    if (!this.ctx) return;
-
-    const now = this.ctx.currentTime;
-    const osc1 = this.ctx.createOscillator();
-    const osc2 = this.ctx.createOscillator();
-    const gainNode = this.ctx.createGain();
-
-    osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(523.25, now); // C5
-    osc1.frequency.setValueAtTime(659.25, now + 0.08); // E5
-    osc1.frequency.setValueAtTime(783.99, now + 0.16); // G5
-    osc1.frequency.setValueAtTime(1046.50, now + 0.24); // C6
-
-    osc2.type = 'triangle';
-    osc2.frequency.setValueAtTime(523.25, now);
-    osc2.frequency.setValueAtTime(659.25, now + 0.08);
-    osc2.frequency.setValueAtTime(783.99, now + 0.16);
-    osc2.frequency.setValueAtTime(1046.50, now + 0.24);
-
-    gainNode.gain.setValueAtTime(0.15, now);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-
-    osc1.connect(gainNode);
-    osc2.connect(gainNode);
-    gainNode.connect(this.ctx.destination);
-
-    osc1.start(now);
-    osc2.start(now);
-    osc1.stop(now + 0.5);
-    osc2.stop(now + 0.5);
+  // One soft bell-like note with a gentle attack and long tail
+  private tone(freq: number, start: number, duration: number, volume = 0.12, type: OscillatorType = 'sine') {
+    const ctx = this.ctx!;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, start);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(volume, start + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + duration + 0.05);
   }
 
-  // Play an epic fanfare sound (level up!)
-  playLevelUp() {
-    this.init();
-    if (!this.ctx) return;
-
-    const now = this.ctx.currentTime;
-    const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50]; // C4, E4, G4, C5, E5, G5, C6
-    const noteDuration = 0.08;
-
-    notes.forEach((freq, idx) => {
-      const osc = this.ctx!.createOscillator();
-      const gainNode = this.ctx!.createGain();
-
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(freq, now + idx * noteDuration);
-
-      // Final chord lingers
-      const dur = idx === notes.length - 1 ? 0.6 : noteDuration;
-      gainNode.gain.setValueAtTime(0.08, now + idx * noteDuration);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, now + idx * noteDuration + dur);
-
-      osc.connect(gainNode);
-      gainNode.connect(this.ctx!.destination);
-
-      osc.start(now + idx * noteDuration);
-      osc.stop(now + idx * noteDuration + dur);
-    });
+  // Task completed: a bright two-note "ding"
+  playComplete() {
+    const ctx = this.init();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    this.tone(880, now, 0.35, 0.1);
+    this.tone(1318.5, now + 0.07, 0.55, 0.09);
+    this.tone(2637, now + 0.07, 0.25, 0.02);
   }
 
-  // Play a cool streak sound (fast arpeggio rising up)
-  playStreak() {
-    this.init();
-    if (!this.ctx) return;
-
-    const now = this.ctx.currentTime;
-    const notes = [392.00, 523.25, 659.25, 783.99, 1046.50, 1318.51]; // G4, C5, E5, G5, C6, E6
-    const noteDuration = 0.05;
-
-    notes.forEach((freq, idx) => {
-      const osc = this.ctx!.createOscillator();
-      const gainNode = this.ctx!.createGain();
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now + idx * noteDuration);
-
-      const dur = idx === notes.length - 1 ? 0.45 : noteDuration;
-      gainNode.gain.setValueAtTime(0.1, now + idx * noteDuration);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, now + idx * noteDuration + dur);
-
-      osc.connect(gainNode);
-      gainNode.connect(this.ctx!.destination);
-
-      osc.start(now + idx * noteDuration);
-      osc.stop(now + idx * noteDuration + dur);
-    });
-  }
-
-  // Play an alert sound (upcoming task deadline)
-  playAlert() {
-    this.init();
-    if (!this.ctx) return;
-
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gainNode = this.ctx.createGain();
-
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(440, now); // A4
-    osc.frequency.linearRampToValueAtTime(880, now + 0.15); // Slide to A5
-    osc.frequency.linearRampToValueAtTime(440, now + 0.3); // Slide back
-
-    gainNode.gain.setValueAtTime(0.1, now);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-
-    osc.connect(gainNode);
-    gainNode.connect(this.ctx.destination);
-
+  // Task created: a soft bubbly pop
+  playPop() {
+    const ctx = this.init();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(420, now);
+    osc.frequency.exponentialRampToValueAtTime(980, now + 0.09);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.14, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
     osc.start(now);
-    osc.stop(now + 0.4);
+    osc.stop(now + 0.2);
+  }
+
+  // Page turn: a short rustle of filtered noise sweeping across, like paper sliding
+  playPageTurn() {
+    const ctx = this.init();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const length = Math.floor(ctx.sampleRate * 0.45);
+    const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / length);
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.Q.value = 0.9;
+    filter.frequency.setValueAtTime(900, now);
+    filter.frequency.exponentialRampToValueAtTime(4200, now + 0.32);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.16, now + 0.06);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.45);
+  }
+
+  // Light UI tap
+  playTap() {
+    const ctx = this.init();
+    if (!ctx) return;
+    this.tone(1200, ctx.currentTime, 0.06, 0.04, 'triangle');
+  }
+
+  // Undo / un-complete: a gentle downward pair
+  playUndo() {
+    const ctx = this.init();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    this.tone(660, now, 0.18, 0.06);
+    this.tone(494, now + 0.08, 0.25, 0.05);
+  }
+
+  // Whole day done: a warm rising major arpeggio
+  playDayComplete() {
+    const ctx = this.init();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => this.tone(f, now + i * 0.11, 1.2 - i * 0.1, 0.08));
+    this.tone(261.63, now, 1.6, 0.05, 'triangle');
+  }
+
+  // Level up: a sparkling fanfare
+  playLevelUp() {
+    const ctx = this.init();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    [392, 523.25, 659.25, 783.99].forEach((f, i) => this.tone(f, now + i * 0.08, 0.3, 0.08, 'triangle'));
+    [1046.5, 1318.5, 1567.98].forEach(f => this.tone(f, now + 0.36, 1.1, 0.06));
+  }
+
+  // Streak milestone: quick rising shimmer
+  playStreak() {
+    const ctx = this.init();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    [659.25, 783.99, 987.77, 1318.5, 1567.98, 1975.5].forEach((f, i) => this.tone(f, now + i * 0.045, 0.4, 0.06));
+  }
+
+  // Reminder: two soft chimes
+  playAlert() {
+    const ctx = this.init();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    this.tone(784, now, 0.4, 0.09);
+    this.tone(784, now + 0.25, 0.5, 0.09);
   }
 }
 
 export const soundEffects = new SoundEffects();
+
+export const haptic = (pattern: number | number[] = 12) => {
+  try {
+    navigator.vibrate?.(pattern);
+  } catch {
+    // unsupported
+  }
+};

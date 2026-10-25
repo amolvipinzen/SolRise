@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   GoogleAuthProvider, 
   signInWithPopup 
@@ -6,9 +6,8 @@ import {
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { UserProfile } from '../types';
-import { HelpCircle } from 'lucide-react';
+import { motion } from 'motion/react';
 import { soundEffects } from '../utils/audio';
-import logoImg from '../logo.jpg';
 
 interface LoginScreenProps {
   onLoginSuccess: (userProfile: UserProfile) => void;
@@ -47,13 +46,17 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           uid,
           displayName: displayName || email?.split('@')[0] || 'SolRise Member',
           email: email || '',
-          avatarEmoji: '🦊', // Default starting avatar
+          avatarEmoji: '🌞', // Default starting avatar
           role: 'Parent', // Default starting role
           circleId: null, // Initially no family circle
           xp: 0,
           level: 1,
           pushToken: generateMockPushToken(),
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          dayStreak: 0,
+          bestStreak: 0,
+          tasksCompleted: 0,
+          activeDays: []
         };
         await setDoc(userDocRef, profileData);
       }
@@ -112,98 +115,93 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 py-8">
-      <div className="w-full max-w-md p-8 bg-[#F5F0FF] rounded-2xl relative overflow-hidden">
-        
-        {/* Subtle decorative top sun glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-amber-200/20 blur-3xl rounded-full"></div>
+    <div className="min-h-screen sky-dawn text-white flex flex-col items-center justify-center px-5 py-10 relative overflow-hidden">
+      {/* Rising sun */}
+      <div className="absolute inset-x-0 bottom-0 h-[45vh] pointer-events-none" aria-hidden="true">
+        <motion.div
+          initial={{ y: 220 }}
+          animate={{ y: 40 }}
+          transition={{ duration: 2.2, ease: [0.2, 0.8, 0.2, 1] }}
+          className="absolute left-1/2 -translate-x-1/2 w-[420px] h-[420px] rounded-full bg-gradient-to-b from-[#FFF1A8] to-[#FFB648] opacity-90 shadow-[0_0_120px_40px_rgba(255,200,110,0.55)]"
+        />
+        <div className="absolute bottom-0 inset-x-0 h-[22vh] bg-gradient-to-t from-[#5E3A8C]/70 to-transparent" />
+      </div>
 
-        {/* Graphical Logo replacing text */}
-        <div className="text-center mb-8 relative z-10">
-          <img 
-            src={logoImg} 
-            alt="SolRise Logo" 
-            className="w-[280px] h-auto mx-auto object-contain rounded-2xl shadow-xs" 
-          />
-        </div>
+      <div className="relative w-full max-w-sm">
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center">
+          <div className="text-6xl" aria-hidden="true">🌅</div>
+          <h1 className="font-display text-5xl font-semibold mt-4 drop-shadow-sm">SolRise</h1>
+          <p className="text-lg text-white/90 mt-2">Rise a little every day.</p>
+        </motion.div>
+
+        <motion.ul
+          initial="hidden"
+          animate="show"
+          variants={{ show: { transition: { staggerChildren: 0.12, delayChildren: 0.4 } } }}
+          className="mt-8 space-y-2.5"
+        >
+          {[
+            ['☀️', 'A fresh, focused list every morning'],
+            ['🎉', 'Small wins, celebrated every time'],
+            ['👨‍👩‍👧', 'Share routines and chores with family'],
+          ].map(([emoji, text]) => (
+            <motion.li
+              key={text}
+              variants={{ hidden: { opacity: 0, x: -12 }, show: { opacity: 1, x: 0 } }}
+              className="flex items-center gap-3 bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl px-4 py-3 text-sm font-semibold"
+            >
+              <span className="text-xl">{emoji}</span>
+              {text}
+            </motion.li>
+          ))}
+        </motion.ul>
 
         {isIframe && (
-          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl text-xs font-semibold leading-relaxed relative z-10 shadow-sm">
-            <div className="flex items-start gap-2.5">
-              <span className="text-base shrink-0 mt-0.5">⚠️</span>
-              <div>
-                <p className="font-bold text-amber-950 mb-1">Running in AI Studio Preview Frame</p>
-                <p className="text-amber-800/90 font-normal mb-3">
-                  Google Sign-In popups are often blocked or open in the background when running inside an iframe.
-                </p>
-                <button
-                  type="button"
-                  onClick={handleOpenInNewTab}
-                  className="w-full inline-flex items-center justify-center px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition-all cursor-pointer shadow-sm text-[11px] gap-1.5"
-                >
-                  Open App in New Tab ↗
-                </button>
-              </div>
-            </div>
+          <div className="mt-6 p-4 bg-white/90 text-[#5a3a12] rounded-2xl text-xs leading-relaxed">
+            <p className="font-bold mb-1">Running inside a preview frame</p>
+            <p className="mb-3">Google sign-in popups are often blocked inside iframes.</p>
+            <button type="button" onClick={handleOpenInNewTab} className="w-full px-4 py-2 bg-[#E2803A] text-white font-bold rounded-xl cursor-pointer">
+              Open app in a new tab ↗
+            </button>
           </div>
         )}
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50/80 border border-red-200 text-red-700 rounded-xl text-xs font-semibold leading-relaxed whitespace-pre-wrap">
-            ⚠️ {error}
+          <div role="alert" className="mt-6 p-4 bg-white text-[#9B2C2C] rounded-2xl text-xs font-medium leading-relaxed whitespace-pre-wrap max-h-60 overflow-y-auto">
+            {error}
           </div>
         )}
 
-        {/* Google Authentication Only Button */}
-        <div className="space-y-4 relative z-10">
-          <button
-            type="button"
-            onClick={handleGoogleSignIn}
-            disabled={loading}
-            className="w-full flex items-center justify-center py-3.5 px-4 bg-white hover:bg-purple-50/40 border border-purple-200 active:translate-y-0.5 text-purple-950 font-bold rounded-xl transition-all cursor-pointer font-sans shadow-sm hover:shadow-md"
-          >
-            {loading ? (
-              <span className="flex items-center gap-2 text-purple-600">
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                Connecting with Google...
-              </span>
-            ) : (
-              <>
-                <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
-                  <path
-                    fill="#EA4335"
-                    d="M23.49 12.275c0-.825-.075-1.62-.21-2.385H12v4.515h6.45c-.27 1.455-1.095 2.685-2.325 3.51v2.91h3.765c2.205-2.025 3.48-5.01 3.48-8.55z"
-                  />
-                  <path
-                    fill="#4285F4"
-                    d="M12 24c3.24 0 5.955-1.08 7.935-2.91l-3.765-2.91c-1.05.69-2.385 1.11-4.17 1.11-3.21 0-5.925-2.16-6.885-5.07H1.365v3.015C3.345 21.18 7.395 24 12 24z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.115 14.22c-.24-.72-.375-1.485-.375-2.22s.135-1.5.375-2.22V6.765H1.365C.54 8.415 0 10.155 0 12s.54 3.585 1.365 5.235l3.75-3.015z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M12 4.755c1.77 0 3.345.615 4.59 1.8l3.435-3.435C17.94 1.185 15.225 0 12 0 7.395 0 3.345 2.82 1.365 6.765l3.75 3.015c.96-2.91 3.675-5.025 6.885-5.025z"
-                  />
-                </svg>
-                Sign In with Google
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Info notice about Google Authentication alone */}
-        <div className="mt-8 pt-6 border-t-2 border-dashed border-purple-100 flex items-start gap-2.5 text-[11px] text-purple-500/75 leading-relaxed">
-          <HelpCircle className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-          <p>
-            SolRise uses secure Google Authentication to connect you with your family. No password setup is required.
-          </p>
-        </div>
-
+        <motion.button
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9 }}
+          type="button"
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+          className="mt-8 w-full flex items-center justify-center gap-3 py-4 px-4 bg-white text-[#2A1A12] font-bold rounded-2xl shadow-xl press cursor-pointer disabled:opacity-80"
+        >
+          {loading ? (
+            <>
+              <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Connecting…
+            </>
+          ) : (
+            <>
+              <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#EA4335" d="M23.49 12.275c0-.825-.075-1.62-.21-2.385H12v4.515h6.45c-.27 1.455-1.095 2.685-2.325 3.51v2.91h3.765c2.205-2.025 3.48-5.01 3.48-8.55z" />
+                <path fill="#4285F4" d="M12 24c3.24 0 5.955-1.08 7.935-2.91l-3.765-2.91c-1.05.69-2.385 1.11-4.17 1.11-3.21 0-5.925-2.16-6.885-5.07H1.365v3.015C3.345 21.18 7.395 24 12 24z" />
+                <path fill="#FBBC05" d="M5.115 14.22c-.24-.72-.375-1.485-.375-2.22s.135-1.5.375-2.22V6.765H1.365C.54 8.415 0 10.155 0 12s.54 3.585 1.365 5.235l3.75-3.015z" />
+                <path fill="#34A853" d="M12 4.755c1.77 0 3.345.615 4.59 1.8l3.435-3.435C17.94 1.185 15.225 0 12 0 7.395 0 3.345 2.82 1.365 6.765l3.75 3.015c.96-2.91 3.675-5.025 6.885-5.025z" />
+              </svg>
+              Continue with Google
+            </>
+          )}
+        </motion.button>
+        <p className="text-center text-xs text-white/75 mt-4">Free, private, no passwords to remember.</p>
       </div>
     </div>
   );

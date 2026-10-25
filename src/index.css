@@ -1,100 +1,340 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Patrick+Hand&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Patrick+Hand&family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-@theme {
+/* Theme tokens: every color in the UI flows from these, so themes swap instantly */
+@theme inline {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-hand: "Patrick Hand", "Caveat", cursive, sans-serif;
-  --font-caveat: "Caveat", cursive, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-hand: "Patrick Hand", "Caveat", cursive;
+  --font-script: "Caveat", cursive;
+
+  --color-bg: var(--t-bg);
+  --color-surface: var(--t-surface);
+  --color-subtle: var(--t-subtle);
+  --color-ink: var(--t-ink);
+  --color-muted: var(--t-muted);
+  --color-faint: var(--t-faint);
+  --color-line: var(--t-line);
+  --color-primary: var(--t-primary);
+  --color-primary-strong: var(--t-primary-strong);
+  --color-on-primary: var(--t-on-primary);
+  --color-primary-soft: var(--t-primary-soft);
+  --color-accent: var(--t-accent);
+  --color-accent-soft: var(--t-accent-soft);
+  --color-success: var(--t-success);
+  --color-success-soft: var(--t-success-soft);
+  --color-danger: var(--t-danger);
+  --color-danger-soft: var(--t-danger-soft);
 }
 
-/* Custom handwritten, doodle-like styles */
-.paper-card {
-  background-color: #ffffff;
-  border: 1px solid #e9d5ff;
-  box-shadow: 4px 4px 0px 0px rgba(168, 85, 247, 0.2);
-  border-radius: 20px;
+:root,
+[data-theme="sunrise"] {
+  color-scheme: light;
+  --t-bg: #FFF7EE;
+  --t-surface: #FFFFFF;
+  --t-subtle: #FDEFE2;
+  --t-ink: #2A1A12;
+  --t-muted: #7A5B4C;
+  --t-faint: #B49787;
+  --t-line: #F2DFCF;
+  --t-primary: #EE6332;
+  --t-primary-strong: #D24E20;
+  --t-on-primary: #FFFFFF;
+  --t-primary-soft: #FFE3D4;
+  --t-accent: #F2AE2E;
+  --t-accent-soft: #FFF0CC;
+  --t-success: #2F9E6A;
+  --t-success-soft: #DDF4E8;
+  --t-danger: #D9453B;
+  --t-danger-soft: #FDE4E1;
+  --t-glow: 238 99 50;
+  --t-paper: #FFFDF8;
+  --t-rule: #F1E3D5;
+  --t-margin: #F6B8A3;
+}
+
+[data-theme="lavender"] {
+  color-scheme: light;
+  --t-bg: #F7F4FF;
+  --t-surface: #FFFFFF;
+  --t-subtle: #EFE9FD;
+  --t-ink: #22163E;
+  --t-muted: #6E6290;
+  --t-faint: #A89DC7;
+  --t-line: #E6DEFA;
+  --t-primary: #7C5CE0;
+  --t-primary-strong: #6544C9;
+  --t-on-primary: #FFFFFF;
+  --t-primary-soft: #E7DEFF;
+  --t-accent: #EFA93A;
+  --t-accent-soft: #FFF1D6;
+  --t-success: #2F9E6A;
+  --t-success-soft: #DDF4E8;
+  --t-danger: #D9453B;
+  --t-danger-soft: #FDE4E1;
+  --t-glow: 124 92 224;
+  --t-paper: #FFFFFF;
+  --t-rule: #E8E1F8;
+  --t-margin: #F1B5CB;
+}
+
+[data-theme="ocean"] {
+  color-scheme: light;
+  --t-bg: #F1F8FB;
+  --t-surface: #FFFFFF;
+  --t-subtle: #E2F1F7;
+  --t-ink: #0C2733;
+  --t-muted: #4D6C7A;
+  --t-faint: #8AA8B5;
+  --t-line: #D3E7EF;
+  --t-primary: #1683B0;
+  --t-primary-strong: #0D6B93;
+  --t-on-primary: #FFFFFF;
+  --t-primary-soft: #D4EEF8;
+  --t-accent: #22B5A6;
+  --t-accent-soft: #D3F5F0;
+  --t-success: #1F9D6E;
+  --t-success-soft: #D9F3E8;
+  --t-danger: #D44A3E;
+  --t-danger-soft: #FCE3E0;
+  --t-glow: 22 131 176;
+  --t-paper: #FFFFFF;
+  --t-rule: #D7E9F1;
+  --t-margin: #F0ABA2;
+}
+
+[data-theme="forest"] {
+  color-scheme: light;
+  --t-bg: #F3F6EF;
+  --t-surface: #FFFFFF;
+  --t-subtle: #E7EEDF;
+  --t-ink: #16261B;
+  --t-muted: #56685B;
+  --t-faint: #93A496;
+  --t-line: #DCE6D3;
+  --t-primary: #377F52;
+  --t-primary-strong: #2A6841;
+  --t-on-primary: #FFFFFF;
+  --t-primary-soft: #D9EEDD;
+  --t-accent: #D49B32;
+  --t-accent-soft: #F9EDD3;
+  --t-success: #2F9E6A;
+  --t-success-soft: #DDF4E8;
+  --t-danger: #C9463B;
+  --t-danger-soft: #FAE3DF;
+  --t-glow: 55 127 82;
+  --t-paper: #FFFEF8;
+  --t-rule: #E0E8D6;
+  --t-margin: #E9B3A4;
+}
+
+[data-theme="midnight"] {
+  color-scheme: dark;
+  --t-bg: #0E0F21;
+  --t-surface: #181A33;
+  --t-subtle: #212443;
+  --t-ink: #EEEDFF;
+  --t-muted: #A9A8CF;
+  --t-faint: #6E6E99;
+  --t-line: #2A2D52;
+  --t-primary: #8D7EFF;
+  --t-primary-strong: #A397FF;
+  --t-on-primary: #0E0F21;
+  --t-primary-soft: #2C2A5C;
+  --t-accent: #FFC857;
+  --t-accent-soft: #3A3220;
+  --t-success: #4CD39A;
+  --t-success-soft: #173A2E;
+  --t-danger: #FF7A70;
+  --t-danger-soft: #3D1F25;
+  --t-glow: 141 126 255;
+  --t-paper: #191B35;
+  --t-rule: #282B50;
+  --t-margin: #5E3558;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  background: var(--t-bg);
+  color: var(--t-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Soft ambient glow behind the app, tinted by the theme */
+.ambient {
+  background:
+    radial-gradient(900px 500px at 15% -10%, rgb(var(--t-glow) / 0.10), transparent 60%),
+    radial-gradient(700px 400px at 100% 0%, color-mix(in srgb, var(--t-accent) 12%, transparent), transparent 60%),
+    var(--t-bg);
+}
+
+.card {
+  background: var(--t-surface);
+  border: 1px solid var(--t-line);
+  border-radius: 24px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.03), 0 8px 24px -12px rgb(var(--t-glow) / 0.18);
+}
+
+/* Binder notebook page */
+.notebook {
   position: relative;
-  transition: all 0.2s ease-in-out;
 }
-
-.paper-card:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 6px 6px 0px 0px rgba(168, 85, 247, 0.25);
+.notebook-tab {
+  background: var(--t-subtle);
+  border-color: var(--t-line);
 }
-
-.custom-shadow {
-  box-shadow: 4px 4px 0px rgba(168, 85, 247, 0.2);
+.notebook-tab-active {
+  background: var(--t-paper);
 }
-
-.paper-texture {
-  background-image: radial-gradient(#d8b4fe 0.5px, transparent 0.5px);
-  background-size: 20px 20px;
+/* The next sheet in the stack, peeking out beneath the current page */
+.notebook-paper.notebook-under {
+  position: absolute;
+  inset: 0 0 0 18px;
+  transform: translate(3px, 4px);
+  filter: brightness(0.97);
 }
-
-.torn-edge {
-  border-bottom: 2px dashed #D8B4FE;
+/* Washi tape strips holding the page header */
+.washi {
+  position: absolute;
+  height: 22px;
+  border-radius: 2px;
+  opacity: 0.85;
+  background:
+    repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.35) 0 6px, transparent 6px 12px),
+    color-mix(in srgb, var(--t-primary) 55%, var(--t-paper));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  -webkit-mask: linear-gradient(90deg, transparent 0 2px, #000 2px calc(100% - 2px), transparent calc(100% - 2px)),
+    repeating-linear-gradient(0deg, #000 0 3px, transparent 3px 4px);
 }
-
-.doodle-border-dashed {
-  border: 2px dashed #b19ff5;
+.washi-accent {
+  background:
+    radial-gradient(circle at 6px 6px, rgb(255 255 255 / 0.55) 2px, transparent 2.5px) 0 0 / 12px 11px,
+    color-mix(in srgb, var(--t-accent) 60%, var(--t-paper));
 }
-
-/* Hand-drawn underline */
-.hand-underline {
+.notebook-paper {
   position: relative;
+  background-color: var(--t-paper);
+  background-image: linear-gradient(to right, transparent 58px, var(--t-margin) 58px, var(--t-margin) 59.5px, transparent 59.5px);
+  border: 1px solid var(--t-line);
+  border-radius: 10px 28px 28px 10px;
+  box-shadow:
+    0 1px 0 var(--t-line),
+    0 4px 0 -1px var(--t-paper),
+    0 5px 0 -1px var(--t-line),
+    0 18px 36px -18px rgb(var(--t-glow) / 0.35);
 }
-
-.hand-underline::after {
-  content: '';
+.notebook-rings {
   position: absolute;
   left: 0;
-  bottom: -4px;
-  width: 100%;
-  height: 4px;
-  background-color: #d1c4e9;
-  border-radius: 32% 68% 51% 49% / 54% 39% 61% 46%;
+  top: 18px;
+  bottom: 18px;
+  width: 40px;
+  background-repeat: repeat-y;
+  background-size: 40px 46px;
+  pointer-events: none;
+  z-index: 5;
+}
+.ruled-line {
+  border-bottom: 1px solid var(--t-rule);
+}
+/* Rows span the whole sheet so rules cross the margin; text starts right of the margin line */
+.page-text {
+  padding-left: 72px;
+  padding-right: var(--paper-pr);
+}
+.page-row {
+  padding-left: 18px;
+  padding-right: var(--paper-pr);
+}
+.notebook-paper {
+  --paper-pr: 16px;
+}
+@media (min-width: 640px) {
+  .notebook-paper {
+    --paper-pr: 24px;
+  }
 }
 
-/* Notebook lined paper look */
-.lined-paper {
-  background: linear-gradient(#faf8ff 95%, #e1d8f5 95%);
-  background-size: 100% 2rem;
-  line-height: 2rem;
+.glow-primary {
+  box-shadow: 0 10px 28px -10px rgb(var(--t-glow) / 0.65);
 }
 
-.ruled-notebook {
-  background-color: #fffef9;
-  background-image: 
-    /* Crisp horizontal rule lines resembling standard notebook sheets */
-    repeating-linear-gradient(
-      transparent,
-      transparent 35px,
-      rgba(147, 197, 253, 0.35) 35px,
-      rgba(147, 197, 253, 0.35) 36px
-    );
-  background-size: 100% 36px;
+.press {
+  transition: transform 0.15s ease;
+}
+.press:active {
+  transform: scale(0.96);
 }
 
-/* Sticky note style */
-.sticky-note {
-  background-color: #f3efff;
-  border-left: 5px solid #a78bfa;
-  box-shadow: 2px 2px 5px rgba(124, 58, 237, 0.08);
+:focus-visible {
+  outline: 2px solid var(--t-primary);
+  outline-offset: 2px;
 }
 
-/* Cute handwritten checklist animations */
-input[type="checkbox"]:checked + span {
-  text-decoration: line-through;
-  opacity: 0.6;
+/* Text fields show focus with a ring on their rounded wrapper instead */
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
 }
 
-/* Soft hand-drawn star rating effect */
-@keyframes star-grow {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.3) rotate(15deg); }
-  100% { transform: scale(1) rotate(0); }
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
 }
 
-.animate-star {
-  animation: star-grow 0.3s ease-out;
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom), 0px);
+}
+
+/* Time-of-day skies for the Today header */
+.sky-dawn {
+  background: linear-gradient(160deg, #F58A5C 0%, #E8607E 50%, #8F5BC6 100%);
+}
+.sky-day {
+  background: linear-gradient(160deg, #2C8AD6 0%, #43A6E3 50%, #EBA23A 100%);
+}
+.sky-dusk {
+  background: linear-gradient(160deg, #EE7A3E 0%, #D24F72 50%, #4E3794 100%);
+}
+.sky-night {
+  background: linear-gradient(160deg, #1B1F4B 0%, #2D2A6B 55%, #4A2F7A 100%);
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+.animate-twinkle {
+  animation: twinkle 2.6s ease-in-out infinite;
+}
+
+@keyframes drift {
+  from { transform: translateX(-10%); }
+  to { transform: translateX(110%); }
+}
+.animate-drift {
+  animation: drift 60s linear infinite;
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 24s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
